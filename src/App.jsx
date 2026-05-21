@@ -1,120 +1,75 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
+import { Link, Outlet } from '@tanstack/react-router'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+      <aside className="sidebar" id="sidebar">
+        <div className="sidebar-header">
+          <div className="logo">
+            <div className="logo-icon">
+              <i className="fas fa-cube" />
+            </div>
+            <span className="logo-text">
+              SISTEMA
+              <br />
+              SIGAC
+            </span>
+          </div>
+          <button className="sidebar-close" id="sidebarClose">
+            <i className="fas fa-times" />
+          </button>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+        <nav className="sidebar-nav">
+          <Link to="/" className="nav-item">
+            <i className="fas fa-house" />
+            <span>Inicio</span>
+          </Link>
+          <Link to="/inventario" className="nav-item">
+            <i className="fas fa-box-archive" />
+            <span>Inventario</span>
+          </Link>
+          <Link to="/gastos" className="nav-item">
+            <i className="fas fa-cart-shopping" />
+            <span>Registro de Gastos</span>
+          </Link>
+          <Link to="/beneficiarios" className="nav-item">
+            <i className="fas fa-people-group" />
+            <span>Gestión de Beneficiarios</span>
+          </Link>
+          <Link to="/donaciones" className="nav-item">
+            <i className="fas fa-hand-holding-heart" />
+            <span>Donaciones</span>
+          </Link>
+          <Link to="/acceso" className="nav-item">
+            <i className="fas fa-chart-bar" />
+            <span>Gestión de Acceso</span>
+          </Link>
+        </nav>
+      </aside>
 
-      <div className="ticks"></div>
+      <div className="overlay" id="overlay" />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      <div className="main-wrapper">
+        <header className="topbar">
+          <button className="hamburger" id="hamburgerBtn">
+            <i className="fas fa-bars" />
+          </button>
+          <div className="topbar-right">
+            <div className="avatar">
+              <img
+                src="https://i.pinimg.com/236x/00/2e/94/002e94da353f89fc849a7f6112c5b066.jpg"
+                alt="user"
+              />
+              <i className="fas fa-chevron-down" />
+            </div>
+          </div>
+        </header>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+        <main className="content">
+          <Outlet />
+        </main>
+      </div>
     </>
   )
 }
