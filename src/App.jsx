@@ -69,6 +69,16 @@ function App() {
         <main className="content">
           <Outlet />
         </main>
+
+        <footer style={{
+          textAlign: 'center',
+          padding: '16px',
+          color: '#6b7280',
+          borderTop: '1px solid #e5e7eb',
+          fontSize: '13px'
+        }}>
+          © 2026 Sistema SIGAC - Universidad Nacional de Costa Rica
+        </footer>
       </div>
     </>
   )
