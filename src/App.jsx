@@ -47,7 +47,9 @@ function App() {
           </Link>
         </nav>
       </aside>
+
       <div className="overlay" id="overlay" />
+
       <div className="main-wrapper">
         <header className="topbar">
           <button className="hamburger" id="hamburgerBtn">
@@ -63,9 +65,11 @@ function App() {
             </div>
           </div>
         </header>
+
         <main className="content">
           <Outlet />
         </main>
+
         <footer style={{
           textAlign: 'center',
           padding: '16px',
@@ -79,4 +83,5 @@ function App() {
     </>
   )
 }
+
 export default App
