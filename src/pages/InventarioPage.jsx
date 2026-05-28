@@ -1,4 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { INVENTORY_SEED } from '../inventory/seed'
+import { loadInventory } from '../services/jsonbin'
 
 function formatDateTime(iso) {
   try {
@@ -9,26 +11,25 @@ function formatDateTime(iso) {
 }
 
 export default function InventarioPage() {
-  const [productos] = useState(() => [
-    {
-      id: 'P-001',
-      nombre: 'Arroz 1kg',
-      existencia: 12,
-      minimo: 5,
-      ubicacion: 'Bodega A - Estante 1',
-      fechaRegistro: new Date().toISOString(),
-      fechaActualizacion: new Date().toISOString(),
-    },
-    {
-      id: 'P-002',
-      nombre: 'Frijoles 1kg',
-      existencia: 0,
-      minimo: 3,
-      ubicacion: 'Bodega A - Estante 2',
-      fechaRegistro: new Date().toISOString(),
-      fechaActualizacion: new Date().toISOString(),
-    },
-  ])
+  const [loading, setLoading] = useState(true)
+  const [productos, setProductos] = useState([])
+
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      try {
+        const data = await loadInventory({ seed: INVENTORY_SEED })
+        if (!mounted) return
+        setProductos(Array.isArray(data?.productos) ? data.productos : [])
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    })()
+
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   const rows = useMemo(() => {
     return productos.map((p) => {
@@ -44,7 +45,7 @@ export default function InventarioPage() {
         <div>
           <h2 style={{ fontSize: 20, marginBottom: 6 }}>Inventario</h2>
           <p style={{ color: 'var(--text-secondary)' }}>
-            Gestión de productos (CRUD), stock e historial (JsonBin se agrega en el siguiente commit).
+            Productos cargados desde JsonBin (o localStorage si falta configuración).
           </p>
         </div>
       </header>
@@ -61,6 +62,9 @@ export default function InventarioPage() {
         <div style={{ padding: 14, borderBottom: '1px solid var(--border)' }}>
           <strong>Productos</strong>
         </div>
+        {loading ? (
+          <div style={{ padding: 16, color: 'var(--text-secondary)' }}>Cargando inventario…</div>
+        ) : null}
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5 }}>
             <thead>
