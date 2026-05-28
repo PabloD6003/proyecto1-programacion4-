@@ -4,6 +4,7 @@ import App from '../App'
 import BeneficiariosLayout from '../features/beneficiarios/BeneficiariosLayout'
 import BeneficiariosPage from '../features/beneficiarios/pages/BeneficiariosPage'
 import AsistenciaPage from '../features/beneficiarios/pages/AsistenciaPage'
+import DonacionesPage from '../pages/Donaciones/DonacionesPage'
 
 const rootRoute = createRootRoute({
   component: App,
@@ -18,7 +19,7 @@ const indexRoute = createRoute({
 const donacionesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/donaciones',
-  component: () => <h2>Donaciones</h2>,
+  component: DonacionesPage,
 })
 
 const inventarioRoute = createRoute({
