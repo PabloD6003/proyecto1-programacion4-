@@ -24,6 +24,7 @@ export default function InventarioPage() {
   const [loading, setLoading] = useState(true)
   const [inventory, setInventory] = useState(() => ({ ...INVENTORY_SEED }))
   const productos = inventory.productos ?? []
+  const movimientos = inventory.movimientos ?? []
 
   const [form, setForm] = useState(() => ({
     id: '',
@@ -34,6 +35,11 @@ export default function InventarioPage() {
   }))
   const [editingId, setEditingId] = useState(null)
   const isEditing = Boolean(editingId)
+  const [movForm, setMovForm] = useState(() => ({
+    productoId: '',
+    tipo: 'entrada',
+    cantidad: 1,
+  }))
 
   useEffect(() => {
     let mounted = true
@@ -62,6 +68,9 @@ export default function InventarioPage() {
       return { ...p, estado }
     })
   }, [productos])
+  const movimientosRows = useMemo(() => {
+    return [...movimientos].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
+  }, [movimientos])
 
   async function persist(nextInventory) {
     setInventory(nextInventory)
@@ -148,6 +157,55 @@ export default function InventarioPage() {
     const next = { ...inventory, productos: nextProductos, movimientos: inventory.movimientos ?? [] }
     await persist(next)
     resetForm()
+  }
+
+  async function onSubmitMovimiento(e) {
+    e.preventDefault()
+    const productoId = movForm.productoId
+    const tipo = movForm.tipo
+    const cantidad = Number(movForm.cantidad)
+
+    if (!productoId) return window.alert('Seleccione un producto para mover stock.')
+    if (!Number.isFinite(cantidad) || cantidad <= 0) return window.alert('La cantidad debe ser mayor que 0.')
+
+    const idx = productos.findIndex((p) => p.id === productoId)
+    if (idx < 0) return window.alert('Producto no encontrado.')
+    const producto = productos[idx]
+
+    const existenciaActual = Number(producto.existencia ?? 0)
+    const delta = tipo === 'entrada' ? cantidad : -cantidad
+    const existenciaNueva = existenciaActual + delta
+    if (existenciaNueva < 0) {
+      return window.alert(
+        `Stock insuficiente para salida. Existencia actual: ${existenciaActual}, salida solicitada: ${cantidad}.`,
+      )
+    }
+
+    const ts = nowIso()
+    const nextProductos = productos.map((p, i) =>
+      i === idx ? { ...p, existencia: existenciaNueva, fechaActualizacion: ts } : p,
+    )
+    const nextMovimientos = [
+      ...movimientos,
+      {
+        id: `M-${Date.now()}`,
+        productoId: producto.id,
+        nombreProducto: producto.nombre,
+        tipo,
+        cantidad,
+        existenciaAnterior: existenciaActual,
+        existenciaNueva,
+        fecha: ts,
+      },
+    ]
+
+    const next = {
+      ...inventory,
+      productos: nextProductos,
+      movimientos: nextMovimientos,
+    }
+    await persist(next)
+    setMovForm((s) => ({ ...s, cantidad: 1 }))
   }
 
   return (
@@ -310,6 +368,75 @@ export default function InventarioPage() {
         }}
       >
         <div style={{ padding: 14, borderBottom: '1px solid var(--border)' }}>
+          <strong>Entrada / Salida de stock</strong>
+        </div>
+        <form onSubmit={onSubmitMovimiento} style={{ padding: 14, display: 'grid', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr auto', gap: 12 }}>
+            <label style={{ display: 'grid', gap: 6 }}>
+              <span style={{ color: 'var(--text-secondary)', fontSize: 12 }}>Producto</span>
+              <select
+                value={movForm.productoId}
+                onChange={(e) => setMovForm((s) => ({ ...s, productoId: e.target.value }))}
+                style={{ padding: '10px 12px', border: '1px solid var(--border)', borderRadius: 8 }}
+              >
+                <option value="">Seleccione…</option>
+                {rows.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.id} - {p.nombre} (Stock: {p.existencia})
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label style={{ display: 'grid', gap: 6 }}>
+              <span style={{ color: 'var(--text-secondary)', fontSize: 12 }}>Tipo</span>
+              <select
+                value={movForm.tipo}
+                onChange={(e) => setMovForm((s) => ({ ...s, tipo: e.target.value }))}
+                style={{ padding: '10px 12px', border: '1px solid var(--border)', borderRadius: 8 }}
+              >
+                <option value="entrada">Entrada</option>
+                <option value="salida">Salida</option>
+              </select>
+            </label>
+            <label style={{ display: 'grid', gap: 6 }}>
+              <span style={{ color: 'var(--text-secondary)', fontSize: 12 }}>Cantidad</span>
+              <input
+                type="number"
+                min={1}
+                value={movForm.cantidad}
+                onChange={(e) => setMovForm((s) => ({ ...s, cantidad: e.target.valueAsNumber }))}
+                style={{ padding: '10px 12px', border: '1px solid var(--border)', borderRadius: 8 }}
+              />
+            </label>
+            <div style={{ display: 'flex', alignItems: 'end' }}>
+              <button
+                type="submit"
+                style={{
+                  padding: '10px 12px',
+                  borderRadius: 8,
+                  border: '1px solid var(--border)',
+                  background: 'var(--accent)',
+                  color: 'white',
+                  cursor: 'pointer',
+                }}
+              >
+                Registrar
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <section
+        style={{
+          background: 'var(--white)',
+          border: '1px solid var(--border)',
+          borderRadius: 10,
+          boxShadow: 'var(--shadow-sm)',
+          overflow: 'hidden',
+        }}
+      >
+        <div style={{ padding: 14, borderBottom: '1px solid var(--border)' }}>
           <strong>Productos</strong>
         </div>
         {loading ? (
@@ -401,6 +528,72 @@ export default function InventarioPage() {
                     style={{ padding: 16, color: 'var(--text-secondary)', textAlign: 'center' }}
                   >
                     Sin productos
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section
+        style={{
+          background: 'var(--white)',
+          border: '1px solid var(--border)',
+          borderRadius: 10,
+          boxShadow: 'var(--shadow-sm)',
+          overflow: 'hidden',
+        }}
+      >
+        <div style={{ padding: 14, borderBottom: '1px solid var(--border)' }}>
+          <strong>Historial de movimientos</strong>
+        </div>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5 }}>
+            <thead>
+              <tr style={{ textAlign: 'left', background: 'var(--bg)' }}>
+                {[
+                  'Fecha',
+                  'Producto',
+                  'Tipo',
+                  'Cantidad',
+                  'Existencia anterior',
+                  'Existencia nueva',
+                ].map((h) => (
+                  <th key={h} style={{ padding: 12, borderBottom: '1px solid var(--border)' }}>
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {movimientosRows.map((m) => (
+                <tr key={m.id}>
+                  <td style={{ padding: 12, borderBottom: '1px solid var(--border)' }}>
+                    {formatDateTime(m.fecha)}
+                  </td>
+                  <td style={{ padding: 12, borderBottom: '1px solid var(--border)' }}>
+                    {m.productoId} - {m.nombreProducto}
+                  </td>
+                  <td style={{ padding: 12, borderBottom: '1px solid var(--border)' }}>
+                    {m.tipo === 'entrada' ? 'Entrada' : 'Salida'}
+                  </td>
+                  <td style={{ padding: 12, borderBottom: '1px solid var(--border)' }}>{m.cantidad}</td>
+                  <td style={{ padding: 12, borderBottom: '1px solid var(--border)' }}>
+                    {m.existenciaAnterior}
+                  </td>
+                  <td style={{ padding: 12, borderBottom: '1px solid var(--border)' }}>
+                    {m.existenciaNueva}
+                  </td>
+                </tr>
+              ))}
+              {movimientosRows.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={6}
+                    style={{ padding: 16, color: 'var(--text-secondary)', textAlign: 'center' }}
+                  >
+                    Sin movimientos
                   </td>
                 </tr>
               ) : null}
