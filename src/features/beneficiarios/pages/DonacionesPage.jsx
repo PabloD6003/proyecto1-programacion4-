@@ -97,7 +97,6 @@ const DonacionesPage = () => {
 
         <TablaDonaciones
           donaciones={donacionesFiltradas}
-          donacionesCompletas={donaciones}
           onAnular={anularDonacion}
           onEditar={handleEditar}
         />
