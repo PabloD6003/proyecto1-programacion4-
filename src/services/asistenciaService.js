@@ -1,6 +1,6 @@
 import jsonbinClient from './jsonbinClient'
 
-const BIN_ID = import.meta.env.VITE_JSONBIN_BIN2_ID
+const BIN_ID = import.meta.env.VITE_JSONBIN_ASISTENCIA_ID
 
 const asistenciaService = {
   getAll: async () => {
