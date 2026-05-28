@@ -2,7 +2,6 @@ import axios from 'axios'
 
 const API_URL = `https://api.jsonbin.io/v3/b/${import.meta.env.VITE_JSONBIN_DONACIONES_ID}`
 const ACCESS_KEY = import.meta.env.VITE_JSONBIN_API_KEY
-console.log('ACCESS_KEY:', ACCESS_KEY)
 const headers = {
   'X-Master-Key': ACCESS_KEY,
   'Content-Type': 'application/json'
@@ -16,7 +15,7 @@ export const getDonaciones = async () => {
 
 // Crear una donación
 export const createDonacion = async (donaciones, nuevaDonacion) => {
-  const updatedDonaciones = [...donaciones, nuevaDonacion]
+  const updatedDonaciones = [...donaciones, { ...nuevaDonacion, estado: 'activa' }]
   await axios.put(API_URL, { donaciones: updatedDonaciones }, { headers })
 }
 
