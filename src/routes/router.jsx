@@ -1,10 +1,10 @@
 import { createRouter, createRoute, createRootRoute } from '@tanstack/react-router'
 import RegistroDeGastos from '../components/Registro de gastos'
 import App from '../App'
+import InventarioPage from '../pages/InventarioPage'
 import BeneficiariosLayout from '../features/beneficiarios/BeneficiariosLayout'
 import BeneficiariosPage from '../features/beneficiarios/pages/BeneficiariosPage'
 import AsistenciaPage from '../features/beneficiarios/pages/AsistenciaPage'
-import DonacionesPage from '../pages/Donaciones/DonacionesPage'
 
 const rootRoute = createRootRoute({
   component: App,
@@ -19,13 +19,13 @@ const indexRoute = createRoute({
 const donacionesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/donaciones',
-  component: DonacionesPage,
+  component: () => <h2>Donaciones</h2>,
 })
 
 const inventarioRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/inventario',
-  component: () => <h2>Inventario</h2>,
+  component: InventarioPage,
 })
 
 const gastosRoute = createRoute({
