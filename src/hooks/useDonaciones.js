@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react'
-import { getDonaciones, createDonacion, updateDonacion, deleteDonacion } from '../services/donacionesService'
+import {
+  getDonaciones,
+  createDonacion,
+  updateDonacion,
+  deleteDonacion,
+  anularDonacion as anularDonacionService,
+} from '../services/donacionesService'
 
 const useDonaciones = () => {
   const [donaciones, setDonaciones] = useState([])
@@ -45,6 +51,15 @@ const useDonaciones = () => {
     }
   }
 
+  const anularDonacion = async (index) => {
+    try {
+      await anularDonacionService(donaciones, index)
+      await fetchDonaciones()
+    } catch (err) {
+      setError('Error al anular la donación')
+    }
+  }
+
   useEffect(() => {
     fetchDonaciones()
   }, [])
@@ -55,7 +70,8 @@ const useDonaciones = () => {
     error,
     agregarDonacion,
     editarDonacion,
-    eliminarDonacion
+    eliminarDonacion,
+    anularDonacion,
   }
 }
 

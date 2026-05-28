@@ -1,10 +1,10 @@
 import axios from 'axios'
 
-const API_URL = import.meta.env.VITE_JSONBIN_URL
-const ACCESS_KEY = import.meta.env.VITE_JSONBIN_ACCESS_KEY
-
+const API_URL = `https://api.jsonbin.io/v3/b/${import.meta.env.VITE_JSONBIN_DONACIONES_ID}`
+const ACCESS_KEY = import.meta.env.VITE_JSONBIN_API_KEY
+console.log('ACCESS_KEY:', ACCESS_KEY)
 const headers = {
-  'X-Access-Key': ACCESS_KEY,
+  'X-Master-Key': ACCESS_KEY,
   'Content-Type': 'application/json'
 }
 
@@ -29,5 +29,13 @@ export const updateDonacion = async (donaciones, index, donacionActualizada) => 
 // Eliminar una donación
 export const deleteDonacion = async (donaciones, index) => {
   const updatedDonaciones = donaciones.filter((_, i) => i !== index)
+  await axios.put(API_URL, { donaciones: updatedDonaciones }, { headers })
+}
+
+// Anular/Reactivar donación cambiando el estado
+export const anularDonacion = async (donaciones, index) => {
+  const updatedDonaciones = donaciones.map((d, i) =>
+    i === index ? { ...d, estado: d.estado === 'anulada' ? 'activa' : 'anulada' } : d
+  )
   await axios.put(API_URL, { donaciones: updatedDonaciones }, { headers })
 }
