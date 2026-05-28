@@ -1,6 +1,3 @@
-﻿/* =====================
-   CSS VARIABLES & RESET
-   ===================== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -35,12 +32,7 @@ body {
   display: flex;
   min-height: 100vh;
 }
-#root {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  min-height: 100vh;
-}
+
 /* =====================
    SIDEBAR
    ===================== */
@@ -139,21 +131,6 @@ body {
   font-weight: 600;
 }
 
-.nav-sub {
-  padding-left: 42px;
-  margin-bottom: 2px;
-}
-
-.nav-item.sub {
-  font-size: 13px;
-  padding: 7px 10px;
-}
-
-.nav-item.sub.active-sub {
-  color: var(--accent);
-  font-weight: 600;
-}
-
 /* =====================
    MAIN WRAPPER
    ===================== */
@@ -164,7 +141,6 @@ body {
   flex-direction: column;
   min-height: 100vh;
   min-width: 0;
-  width: calc(100% - var(--sidebar-w));
 }
 
 /* =====================
@@ -176,7 +152,7 @@ body {
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 0 24px;
   position: sticky;
   top: 0;
@@ -200,37 +176,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  
-}
-
-.icon-btn {
-  width: 38px; height: 38px;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 15px;
-  position: relative;
-  transition: background 0.15s;
-}
-.icon-btn:hover { background: var(--bg); }
-
-.icon-btn.notif .badge {
-  position: absolute;
-  top: -3px; right: -3px;
-  width: 17px; height: 17px;
-  background: var(--red);
-  color: white;
-  font-size: 9px;
-  font-weight: 700;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  margin-left: auto;
 }
 
 .avatar {
@@ -273,7 +219,6 @@ body {
 /* =====================
    RESPONSIVE
    ===================== */
-
 @media (max-width: 768px) {
   :root { --sidebar-w: 240px; }
 

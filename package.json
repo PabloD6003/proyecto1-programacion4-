@@ -1,5 +1,5 @@
 {
-  "name": "proyecto1",
+  "name": "mi-proyecto",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,11 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "jsonbin:create-inventory": "node scripts/create-inventory-bin.mjs"
   },
   "dependencies": {
     "@tanstack/react-form": "^1.32.0",
-    "@tanstack/react-router": "^1.170.6",
+    "@tanstack/react-router": "^1.170.7",
     "@tanstack/react-table": "^8.21.3",
     "axios": "^1.16.1",
     "react": "^19.2.6",
