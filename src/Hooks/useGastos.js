@@ -1,8 +1,8 @@
 import {useState,useEffect, useCallback} from 'react';
 
 
-const BIN_ID = import.meta.env.VITE_JSONBIN_BIN_ID
-const API_KEY = import.meta.env.VITE_JSONBIN_API_KEY
+const BIN_ID = import.meta.env.VITE_JSONBIN_BIN_ID;
+const API_KEY = import.meta.env.VITE_MASTER_KEY;
 const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`
 
 const headers = {
@@ -21,8 +21,14 @@ export default function useGastos(){
         const fetchGastos = async () =>{
         setLoading(true)
         try{
-            const response = await fetch(BASE_URL + '/latest', {headers})
-            setGastos(response.data.record.gastos ?? [])
+           const response = await fetch(BASE_URL + '/latest', {headers: {"X-Master-Key": API_KEY}}) 
+            const data = await response.json()
+            const expenses = data.record.gastos ?? data.record.Gasto ?? []
+            const gastosNormalizados = expenses.map((gasto, index) => ({
+                ...gasto,
+                id: index + 1,
+            }))
+            setGastos(gastosNormalizados)
         }catch{
             setError('Error, no se puede cargar el registro de gastos')
         }finally{
@@ -33,27 +39,38 @@ export default function useGastos(){
     },[])
     
     //create - agregar gasto
-    const agregarGasto = useCallback( async ({detalle, monto,descripcion, fecha_gasto}) =>{
+    const agregarGasto = useCallback( async ({detalle, monto, descripcion, fecha_gasto}) =>{
         setLoading(true) // Indicar que se está cargando
         try{
-            const response = await fetch(BASE_URL + '/latest', {headers}) // Obtener los gastos actuales
-            const gastosActuales = response.data.record.gastos ?? [] 
-            // Crear un nuevo gasto con un ID único
-            const nuevoGasto = { 
-                id: Date.now(),
+            const response = await fetch(BASE_URL + '/latest', {headers: {"X-Master-Key": API_KEY}}) // Obtener los gastos actuales
+            const data = await response.json()
+            const expenseKey = data.record.gastos ? 'gastos' : data.record.Gasto ? 'Gasto' : 'gastos'
+            const gastosActuales = data.record[expenseKey] ?? []
+            const nuevoGasto = {
                 detalle,
                 monto: parseFloat(monto),
                 descripcion,
-                fecha_gasto, 
+                fecha_gasto,
             }
-            const gastosActualizados = [...gastosActuales, nuevoGasto]
-            await fetch.put(BASE_URL, {gastos: gastosActualizados}, {headers}) // Actualizar el estado local con los gastos actualizados
+            const gastosActualizados = [...gastosActuales, nuevoGasto].map((gasto, index) => ({
+                ...gasto,
+                id: index + 1,
+            }))
+            await fetch(BASE_URL, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({
+                  ...data.record,
+                  [expenseKey]: gastosActualizados,
+                }),
+            })
             setGastos(gastosActualizados)
         }catch{
             setError('Error, no es posible agregar el gasto')
         }finally{
             setLoading(false) // Indicar que se ha terminado de cargar
         }
+       
     },[])
    
     return{gastos,loading,error,agregarGasto}
