@@ -1,11 +1,27 @@
 import axios from 'axios'
 
+const EMPTY_INVENTORY = {
+  version: 1,
+  productos: [],
+  movimientos: [],
+}
+
 function getEnv(name, fallback = '') {
-  return (import.meta.env?.[name] ?? fallback).toString()
+  const raw = (import.meta.env?.[name] ?? fallback).toString()
+  const trimmed = raw.trim()
+  // .env a veces se guarda como: VITE_XXX='valor', y eso rompe la auth.
+  // Si detectamos comillas envolviendo el valor, las quitamos.
+  if (
+    (trimmed.startsWith("'") && trimmed.endsWith("'")) ||
+    (trimmed.startsWith('"') && trimmed.endsWith('"'))
+  ) {
+    return trimmed.slice(1, -1).trim()
+  }
+  return trimmed
 }
 
 function hasJsonBinConfig() {
-  return Boolean(getEnv('VITE_JSONBIN_BIN_ID') && getEnv('VITE_JSONBIN_MASTER_KEY'))
+  return Boolean(getEnv('VITE_JSONBIN_BIN_ID_Inventario') && getEnv('VITE_JSONBIN_MASTER_KEY'))
 }
 
 function getBaseUrl() {
@@ -13,7 +29,7 @@ function getBaseUrl() {
 }
 
 function getBinId() {
-  return getEnv('VITE_JSONBIN_BIN_ID')
+  return getEnv('VITE_JSONBIN_BIN_ID_Inventario')
 }
 
 function getMasterKey() {
@@ -24,26 +40,36 @@ function localKey() {
   return `inventory:local:v1`
 }
 
-export async function loadInventory({ seed }) {
+export async function loadInventory() {
   if (!hasJsonBinConfig()) {
     const raw = localStorage.getItem(localKey())
     if (raw) return JSON.parse(raw)
-    localStorage.setItem(localKey(), JSON.stringify(seed))
-    return seed
+    localStorage.setItem(localKey(), JSON.stringify(EMPTY_INVENTORY))
+    return EMPTY_INVENTORY
   }
 
   const url = `${getBaseUrl()}/b/${getBinId()}/latest`
-  const res = await axios.get(url, {
-    headers: {
-      'X-Master-Key': getMasterKey(),
-    },
-  })
+  let res
+  try {
+    res = await axios.get(url, {
+      headers: {
+        'X-Master-Key': getMasterKey(),
+      },
+    })
+  } catch (err) {
+    const status = err?.response?.status
+    const body = err?.response?.data
+    // No imprimimos el master key; solo información útil para depurar.
+    // eslint-disable-next-line no-console
+    console.error('JsonBin loadInventory error', { status, body })
+    throw new Error(`Error al cargar JsonBin (status: ${status ?? 'desconocido'}).`)
+  }
 
   const record = res?.data?.record
   if (record && typeof record === 'object') return record
 
-  await saveInventory(seed)
-  return seed
+  await saveInventory(EMPTY_INVENTORY)
+  return EMPTY_INVENTORY
 }
 
 export async function saveInventory(next) {

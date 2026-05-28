@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { INVENTORY_SEED } from '../inventory/seed'
 import { loadInventory, saveInventory } from '../services/jsonbin'
 
 function formatDateTime(iso) {
@@ -22,9 +21,10 @@ function nowIso() {
 
 export default function InventarioPage() {
   const [loading, setLoading] = useState(true)
-  const [inventory, setInventory] = useState(() => ({ ...INVENTORY_SEED }))
+  const [inventory, setInventory] = useState(() => ({ version: 1, productos: [], movimientos: [] }))
   const productos = inventory.productos ?? []
   const movimientos = inventory.movimientos ?? []
+  const [loadError, setLoadError] = useState('')
 
   const [form, setForm] = useState(() => ({
     id: '',
@@ -46,13 +46,18 @@ export default function InventarioPage() {
     let mounted = true
     ;(async () => {
       try {
-        const data = await loadInventory({ seed: INVENTORY_SEED })
+        const data = await loadInventory()
         if (!mounted) return
         setInventory({
           version: data?.version ?? 1,
           productos: Array.isArray(data?.productos) ? data.productos : [],
           movimientos: Array.isArray(data?.movimientos) ? data.movimientos : [],
         })
+        setLoadError('')
+      } catch (err) {
+        if (!mounted) return
+        setLoadError(err?.message ?? 'Error al cargar inventario desde JsonBin.')
+        setInventory({ version: 1, productos: [], movimientos: [] })
       } finally {
         if (mounted) setLoading(false)
       }
@@ -241,6 +246,20 @@ export default function InventarioPage() {
           </p>
         </div>
       </header>
+      {loadError ? (
+        <div
+          style={{
+            padding: 12,
+            borderRadius: 10,
+            border: '1px solid var(--red-bg)',
+            background: 'var(--red-bg)',
+            color: '#991b1b',
+            fontSize: 13.5,
+          }}
+        >
+          {loadError}
+        </div>
+      ) : null}
 
       {notifications.length > 0 ? (
         <section
