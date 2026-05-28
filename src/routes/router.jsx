@@ -1,5 +1,5 @@
 import { createRouter, createRoute, createRootRoute } from '@tanstack/react-router'
-import RegistroDeGastos from '../Components/Registro de gastos'
+import RegistroDeGastos from '../components/Registro de gastos'
 import App from '../App'
 import BeneficiariosLayout from '../features/beneficiarios/BeneficiariosLayout'
 import BeneficiariosPage from '../features/beneficiarios/pages/BeneficiariosPage'

@@ -8,7 +8,7 @@ export default function RegistroDeGastos() {
 
   return (
     <div className="registro-gastos">
-      <h2>Registro de Gastos</h2>
+      <h2> Registro de Gastos </h2>
       {error && <p className="error-msg">{error}</p>}
       <div className="registro-gastos-content">
         <FormularioGasto onAgregar={agregarGasto} loading={loading} />

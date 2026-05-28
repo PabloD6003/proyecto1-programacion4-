@@ -27,7 +27,7 @@ export default function FormularioGasto({ onAgregar, loading }) {
                 <div className="form-group">
                     <label>Detalle</label>
                     <input
-                        type= "text" placeholder= "Ej: viveres,transporte, servicios..." value= {field.state.value} onChange= {(e)=> field.handleChange(e.target.value)} onBlur={field.handleBlur}
+                        type= "text" placeholder= "Ej: viveres,transporte, servicios, material..." value= {field.state.value} onChange= {(e)=> field.handleChange(e.target.value)} onBlur={field.handleBlur}
                     />
                     {field.state.meta.errors.length > 0 && (
                         <span className= "form-error">{field.state.meta.errors[0]}</span>
