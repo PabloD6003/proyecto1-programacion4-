@@ -1,0 +1,386 @@
+/* ============================================================
+   MÓDULO: Gestión de Donaciones
+   Todos los estilos están bajo .donaciones-module para
+   evitar conflictos con los estilos del resto del equipo.
+   ============================================================ */
+
+/* ── Variables locales ──────────────────────────────────────────────────── */
+.donaciones-module {
+  --don-accent:       #1a3a6b;
+  --don-accent-light: #e8eef8;
+  --don-success:      #22c55e;
+  --don-warning:      #f59e0b;
+  --don-danger:       #ef4444;
+  --don-info:         #3b82f6;
+  --don-bg:           #ffffff;
+  --don-bg-soft:      #f4f6fb;
+  --don-border:       #e5e7eb;
+  --don-text:         #1a1d23;
+  --don-text-soft:    #6b7280;
+  --don-radius:       8px;
+  --don-shadow:       0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
+
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 100%;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  color: var(--don-text);
+  background: var(--don-bg-soft);
+}
+
+@media (prefers-color-scheme: dark) {
+  .donaciones-module {
+    --don-bg:       #16171d;
+    --don-bg-soft:  #1f2028;
+    --don-border:   #2e303a;
+    --don-text:     #f3f4f6;
+    --don-text-soft:#9ca3af;
+  }
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.donaciones-module .don-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--don-border);
+  background: var(--don-bg);
+}
+
+.donaciones-module .don-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--don-text);
+  margin: 0;
+}
+
+.donaciones-module .don-title i {
+  color: var(--don-accent);
+  font-size: 1.2rem;
+}
+
+/* ── Content ─────────────────────────────────────────────────────────────── */
+.donaciones-module .don-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Botones ────────────────────────────────────────────────────────────── */
+.donaciones-module .don-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  font-size: .9rem;
+  font-weight: 500;
+  border: none;
+  border-radius: var(--don-radius);
+  cursor: pointer;
+  transition: background .15s, opacity .15s, box-shadow .15s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.donaciones-module .don-btn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.donaciones-module .don-btn--primary {
+  background: var(--don-accent);
+  color: #fff;
+}
+.donaciones-module .don-btn--primary:hover:not(:disabled) {
+  background: #122b52;
+  box-shadow: 0 2px 8px rgba(26,58,107,.3);
+}
+
+.donaciones-module .don-btn--danger {
+  background: var(--don-danger);
+  color: #fff;
+}
+.donaciones-module .don-btn--danger:hover:not(:disabled) { background: #dc2626; }
+
+.donaciones-module .don-btn--outline {
+  background: transparent;
+  border: 1px solid var(--don-border);
+  color: var(--don-text);
+}
+.donaciones-module .don-btn--outline:hover:not(:disabled) {
+  border-color: var(--don-accent);
+  color: var(--don-accent);
+}
+
+.donaciones-module .don-btn--ghost {
+  background: transparent;
+  color: var(--don-text-soft);
+  border: 1px solid transparent;
+}
+.donaciones-module .don-btn--ghost:hover:not(:disabled) {
+  background: var(--don-bg-soft);
+  border-color: var(--don-border);
+}
+
+.donaciones-module .don-btn--sm {
+  padding: 6px 10px;
+  font-size: .82rem;
+}
+
+/* ── Formulario ─────────────────────────────────────────────────────────── */
+.donaciones-module .don-form-card {
+  background: var(--don-bg);
+  border: 1px solid var(--don-border);
+  border-radius: var(--don-radius);
+  box-shadow: var(--don-shadow);
+  overflow: hidden;
+}
+
+.donaciones-module .don-form-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  background: var(--don-bg-soft);
+  border-bottom: 1px solid var(--don-border);
+  font-size: .85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--don-accent);
+}
+
+.donaciones-module .don-form-card__body {
+  padding: 20px;
+}
+
+.donaciones-module .don-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 520px) {
+  .donaciones-module .don-form-grid { grid-template-columns: 1fr; }
+}
+
+.donaciones-module .don-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.donaciones-module .don-form-label {
+  font-size: .85rem;
+  font-weight: 500;
+  color: var(--don-text);
+}
+
+.donaciones-module .don-required {
+  color: var(--don-danger);
+}
+
+.donaciones-module .don-form-input {
+  padding: 9px 12px;
+  border: 1px solid var(--don-border);
+  border-radius: var(--don-radius);
+  background: var(--don-bg);
+  color: var(--don-text);
+  font-size: .9rem;
+  font-family: inherit;
+  transition: border-color .15s, box-shadow .15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.donaciones-module .don-form-input:focus {
+  outline: none;
+  border-color: var(--don-accent);
+  box-shadow: 0 0 0 3px rgba(26,58,107,.12);
+}
+
+.donaciones-module .don-form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%236b7280' d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 30px;
+}
+
+.donaciones-module .don-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--don-border);
+}
+
+/* ── Tabla ──────────────────────────────────────────────────────────────── */
+.donaciones-module .don-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--don-border);
+  border-radius: var(--don-radius);
+  background: var(--don-bg);
+  box-shadow: var(--don-shadow);
+}
+
+.donaciones-module .don-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .9rem;
+}
+
+.donaciones-module .don-table thead {
+  background: var(--don-bg-soft);
+}
+
+.donaciones-module .don-table th {
+  padding: 11px 14px;
+  text-align: left;
+  font-size: .78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--don-text-soft);
+  border-bottom: 1px solid var(--don-border);
+  white-space: nowrap;
+}
+
+.donaciones-module .don-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--don-border);
+  color: var(--don-text);
+  vertical-align: middle;
+}
+
+.donaciones-module .don-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.donaciones-module .don-table tbody tr:hover {
+  background: var(--don-bg-soft);
+}
+
+.donaciones-module .don-cell-name {
+  font-weight: 500;
+}
+
+.donaciones-module .don-text-muted {
+  color: var(--don-text-soft);
+}
+
+.donaciones-module .don-table-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.donaciones-module .don-table-empty {
+  text-align: center;
+  padding: 48px 24px !important;
+  color: var(--don-text-soft);
+}
+
+.donaciones-module .don-table-empty i {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 8px;
+  opacity: .4;
+}
+
+/* ── Badges ─────────────────────────────────────────────────────────────── */
+.donaciones-module .don-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.donaciones-module .don-badge--dinero {
+  background: rgba(34,197,94,.12);
+  color: #16a34a;
+}
+
+.donaciones-module .don-badge--especie {
+  background: rgba(245,158,11,.12);
+  color: #b45309;
+}
+
+/* ── Alertas ────────────────────────────────────────────────────────────── */
+.donaciones-module .don-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--don-radius);
+  font-size: .9rem;
+}
+
+.donaciones-module .don-alert--error {
+  background: rgba(239,68,68,.1);
+  color: var(--don-danger);
+  border: 1px solid rgba(239,68,68,.25);
+}
+
+.donaciones-module .don-alert--loading {
+  background: var(--don-bg-soft);
+  color: var(--don-text-soft);
+  border: 1px solid var(--don-border);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .donaciones-module .don-header  { padding: 16px 16px 12px; }
+  .donaciones-module .don-content { padding: 16px; }
+  .donaciones-module .don-form-card__body { padding: 14px; }
+}
+
+/* ── Filtros ─────────────────────────────────────────────────────────────── */
+.donaciones-module .don-filtros {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.donaciones-module .don-filtros__search {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.donaciones-module .don-filtros__search i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--don-text-soft);
+  font-size: .85rem;
+  pointer-events: none;
+}
+
+.donaciones-module .don-filtros__search .don-form-input {
+  padding-left: 34px;
+}
+
+.donaciones-module .don-filtros__select {
+  width: auto;
+  min-width: 160px;
+}
+
+.donaciones-module .don-form-input--error { border-color: #ef4444 !important; }
+.donaciones-module .don-form-error { font-size: .8rem; color: #ef4444; margin-top: 3px; }
+.donaciones-module .don-row--anulada td { opacity: .5; text-decoration: line-through; }
+.donaciones-module .don-badge--anulada { background: rgba(239,68,68,.12); color: #b91c1c; }

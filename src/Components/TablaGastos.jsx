@@ -4,7 +4,7 @@ import {
   getSortedRowModel,
   flexRender,
 } from '@tanstack/react-table'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 
 const columns = [
   {
@@ -44,6 +44,13 @@ export default function TablaGastos({ gastos, loading }) {
 
   const data = useMemo(() => gastos, [gastos])
   const memoColumns = useMemo(() => columns, [])
+  const [selectedGasto, setSelectedGasto] = useState(null)
+
+  useEffect(() => {
+    if (selectedGasto && !gastos.some((g) => g.id === selectedGasto.id)) {
+      setSelectedGasto(null)
+    }
+  }, [gastos, selectedGasto])
 
   const table = useReactTable({
     data: data,
@@ -91,15 +98,25 @@ export default function TablaGastos({ gastos, loading }) {
               </td>
             </tr>
           ) : (
-            table.getRowModel().rows.map((row) => (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))
+            table.getRowModel().rows.map((row) => {
+              const gasto = row.original
+              const isSelected = selectedGasto?.id === gasto.id
+
+              return (
+                <tr
+                  key={row.id}
+                  onClick={() => setSelectedGasto(gasto)}
+                  className={isSelected ? 'selected-row' : ''}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              )
+            })
           )}
         </tbody>
         {gastos.length > 0 && (
@@ -118,6 +135,18 @@ export default function TablaGastos({ gastos, loading }) {
           </tfoot>
         )}
       </table>
+      {selectedGasto && (
+        <div className="descripcion-panel">
+          <div className="descripcion-panel-header">
+            <h3>Descripción del gasto</h3>
+            <div className="descripcion-meta">
+              <span>{`ID: ${selectedGasto.id}`}</span>
+              <span>{`Detalle: ${selectedGasto.detalle}`}</span>
+            </div>
+          </div>
+          <p>{selectedGasto.descripcion?.trim() || 'No hay descripción disponible.'}</p>
+        </div>
+      )}
     </div>
   )
 }
