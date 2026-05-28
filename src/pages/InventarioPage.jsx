@@ -40,6 +40,7 @@ export default function InventarioPage() {
     tipo: 'entrada',
     cantidad: 1,
   }))
+  const [notifications, setNotifications] = useState([])
 
   useEffect(() => {
     let mounted = true
@@ -75,6 +76,20 @@ export default function InventarioPage() {
   async function persist(nextInventory) {
     setInventory(nextInventory)
     await saveInventory(nextInventory)
+  }
+
+  function pushNotification(type, message) {
+    const item = {
+      id: `N-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      type,
+      message,
+      createdAt: nowIso(),
+    }
+    setNotifications((prev) => [item, ...prev].slice(0, 8))
+  }
+
+  function removeNotification(id) {
+    setNotifications((prev) => prev.filter((n) => n.id !== id))
   }
 
   function resetForm() {
@@ -156,6 +171,9 @@ export default function InventarioPage() {
 
     const next = { ...inventory, productos: nextProductos, movimientos: inventory.movimientos ?? [] }
     await persist(next)
+    if (!isEditing) {
+      pushNotification('create', `Producto creado: ${id} - ${nombre}. Stock inicial: ${existencia}.`)
+    }
     resetForm()
   }
 
@@ -205,6 +223,11 @@ export default function InventarioPage() {
       movimientos: nextMovimientos,
     }
     await persist(next)
+    if (tipo === 'entrada') {
+      pushNotification('entrada', `Entrada registrada: +${cantidad} unidades a ${producto.id}.`)
+    } else {
+      pushNotification('salida', `Salida registrada: -${cantidad} unidades de ${producto.id}.`)
+    }
     setMovForm((s) => ({ ...s, cantidad: 1 }))
   }
 
@@ -218,6 +241,76 @@ export default function InventarioPage() {
           </p>
         </div>
       </header>
+
+      {notifications.length > 0 ? (
+        <section
+          style={{
+            background: 'var(--white)',
+            border: '1px solid var(--border)',
+            borderRadius: 10,
+            boxShadow: 'var(--shadow-sm)',
+            overflow: 'hidden',
+          }}
+        >
+          <div style={{ padding: 14, borderBottom: '1px solid var(--border)' }}>
+            <strong>Notificaciones</strong>
+          </div>
+          <div style={{ display: 'grid', gap: 8, padding: 12 }}>
+            {notifications.map((n) => {
+              const bg =
+                n.type === 'create'
+                  ? 'var(--blue-bg)'
+                  : n.type === 'entrada'
+                    ? '#dcfce7'
+                    : n.type === 'salida'
+                      ? '#fee2e2'
+                      : 'var(--bg)'
+              return (
+                <div
+                  key={n.id}
+                  style={{
+                    padding: 10,
+                    borderRadius: 8,
+                    border: '1px solid var(--border)',
+                    background: bg,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    gap: 10,
+                    alignItems: 'start',
+                  }}
+                >
+                  <div>
+                    <div style={{ fontWeight: 600, marginBottom: 4 }}>
+                      {n.type === 'create'
+                        ? 'Producto creado'
+                        : n.type === 'entrada'
+                          ? 'Entrada de stock'
+                          : 'Salida de stock'}
+                    </div>
+                    <div style={{ fontSize: 13 }}>{n.message}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4 }}>
+                      {formatDateTime(n.createdAt)}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeNotification(n.id)}
+                    style={{
+                      border: '1px solid var(--border)',
+                      borderRadius: 6,
+                      background: 'var(--white)',
+                      cursor: 'pointer',
+                      padding: '4px 8px',
+                    }}
+                  >
+                    Cerrar
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      ) : null}
 
       <section
         style={{
