@@ -6,7 +6,6 @@ import DonacionesPage from '../pages/Donaciones/DonacionesPage'
 import BeneficiariosLayout from '../features/beneficiarios/BeneficiariosLayout'
 import BeneficiariosPage from '../features/beneficiarios/pages/BeneficiariosPage'
 import AsistenciaPage from '../features/beneficiarios/pages/AsistenciaPage'
-import DonacionesPage from '../pages/Donaciones/DonacionesPage'
 import AccesoPage from '../modules/acceso/pages/AccesoPage'
 
 const rootRoute = createRootRoute({
