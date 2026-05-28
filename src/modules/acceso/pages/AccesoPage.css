@@ -1,0 +1,219 @@
+.acceso-module {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+}
+
+.acc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.acc-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f9fafb;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.acc-title i {
+  color: #6366f1;
+}
+
+.acc-btn-nuevo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.acc-btn-nuevo:hover {
+  background-color: #4f46e5;
+}
+
+.acc-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.acc-alert--loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #1e293b;
+  color: #94a3b8;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+.acc-form-card {
+  background-color: #1e293b;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #334155;
+}
+
+.acc-form-card h3 {
+  color: #f1f5f9;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+}
+
+.acc-form-card label {
+  display: block;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.acc-form-card input,
+.acc-form-card textarea {
+  width: 100%;
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #f1f5f9;
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.acc-form-card input:focus,
+.acc-form-card textarea:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.acc-form-card textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.acc-form-card small {
+  color: #f87171;
+  font-size: 0.75rem;
+  display: block;
+  margin-top: -12px;
+  margin-bottom: 12px;
+}
+
+.acc-form-card button[type='submit'] {
+  background-color: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.acc-form-card button[type='submit']:hover {
+  background-color: #4f46e5;
+}
+
+.acc-form-card button[type='button'] {
+  background-color: transparent;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.acc-form-card button[type='button']:hover {
+  background-color: #334155;
+  color: #f1f5f9;
+}
+
+.acc-table-card {
+  background-color: #1e293b;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #334155;
+  overflow-x: auto;
+}
+
+.acc-table-card table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.acc-table-card th {
+  text-align: left;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px 16px;
+  border-bottom: 1px solid #334155;
+}
+
+.acc-table-card td {
+  color: #e2e8f0;
+  font-size: 0.875rem;
+  padding: 14px 16px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.acc-table-card tr:hover td {
+  background-color: #0f172a;
+}
+
+.acc-table-card button {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.acc-table-card button:first-child {
+  background-color: transparent;
+  color: #6366f1;
+  border: 1px solid #6366f1;
+}
+
+.acc-table-card button:first-child:hover {
+  background-color: #6366f1;
+  color: #fff;
+}
+
+.acc-table-card button:last-child {
+  background-color: transparent;
+  color: #f87171;
+  border: 1px solid #f87171;
+}
+
+.acc-table-card button:last-child:hover {
+  background-color: #f87171;
+  color: #fff;
+}

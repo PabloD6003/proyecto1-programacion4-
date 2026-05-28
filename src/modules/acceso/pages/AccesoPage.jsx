@@ -1,13 +1,17 @@
 import { useState } from 'react'
 import RoleForm from '../components/RoleForm'
 import RolesTable from '../components/RolesTable'
-import useRoles from '../hooks/useRoles'
+import ConfirmModal from '../../../components/ConfirmModal'
+import '../../../components/ConfirmModal.css'
+import useRoles from '../../../Hooks/useRoles'
 import { RoleSchema } from '../types/role.types'
+import './AccesoPage.css'
 
 export default function AccesoPage() {
   const { roles, loading, crearRol, editarRol, eliminarRol } = useRoles()
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
   const [rolEditando, setRolEditando] = useState(null)
+  const [idAEliminar, setIdAEliminar] = useState(null)
 
   const abrirFormularioCreacion = () => {
     setRolEditando(null)
@@ -20,7 +24,6 @@ export default function AccesoPage() {
     } else {
       crearRol(data)
     }
-
     setMostrarFormulario(false)
     setRolEditando(null)
   }
@@ -36,37 +39,60 @@ export default function AccesoPage() {
   }
 
   const manejarEliminar = (id) => {
-    const confirmado = window.confirm('¿Seguro que deseas eliminar este rol?')
+    setIdAEliminar(id)
+  }
 
-    if (!confirmado) {
-      return
-    }
-
-    eliminarRol(id)
+  const confirmarEliminar = async () => {
+    await eliminarRol(idAEliminar)
+    setIdAEliminar(null)
   }
 
   if (loading) {
-    return <p>Cargando roles...</p>
+    return (
+      <div className="acc-alert acc-alert--loading">
+        <i className="fas fa-spinner fa-spin" />
+        Cargando roles...
+      </div>
+    )
   }
 
   return (
-    <section>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Gestión de roles</h2>
-        <button type="button" onClick={abrirFormularioCreacion}>
-          Crear nuevo rol
-        </button>
+    <div className="acceso-module">
+      <div className="acc-header">
+        <h1 className="acc-title">
+          <i className="fas fa-user-shield" />
+          Gestión de Acceso
+        </h1>
+        {!mostrarFormulario && (
+          <button type="button" className="acc-btn-nuevo" onClick={abrirFormularioCreacion}>
+            <i className="fas fa-plus" /> Nuevo Rol
+          </button>
+        )}
       </div>
 
-      {mostrarFormulario ? (
-        <RoleForm
-          rolInicial={rolEditando ?? RoleSchema}
-          onSubmit={manejarSubmit}
-          onCancelar={manejarCancelar}
-        />
-      ) : null}
+      <div className="acc-content">
+        {mostrarFormulario && (
+          <div className="acc-form-card">
+            <RoleForm
+              rolInicial={rolEditando ?? RoleSchema}
+              onSubmit={manejarSubmit}
+              onCancelar={manejarCancelar}
+            />
+          </div>
+        )}
 
-      <RolesTable roles={roles} onEditar={manejarEditar} onEliminar={manejarEliminar} />
-    </section>
+        <div className="acc-table-card">
+          <RolesTable roles={roles} onEditar={manejarEditar} onEliminar={manejarEliminar} />
+        </div>
+      </div>
+
+      {idAEliminar && (
+        <ConfirmModal
+          mensaje="¿Seguro que deseas eliminar este rol?"
+          onConfirmar={confirmarEliminar}
+          onCancelar={() => setIdAEliminar(null)}
+        />
+      )}
+    </div>
   )
 }
