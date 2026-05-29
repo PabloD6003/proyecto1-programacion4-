@@ -1,5 +1,4 @@
 import { createRouter, createRoute, createRootRoute } from '@tanstack/react-router'
-import RegistroDeGastos from '../components/Registro de gastos'
 import App from '../App'
 import InventarioPage from '../pages/InventarioPage'
 import DonacionesPage from '../pages/Donaciones/DonacionesPage'
@@ -30,10 +29,12 @@ const inventarioRoute = createRoute({
   component: InventarioPage,
 })
 
+
+
 const gastosRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/gastos',
-  component: () => <RegistroDeGastos/>,
+  component: () => <h2>Registro de Gastos</h2>,
 })
 
 const beneficiariosLayoutRoute = createRoute({
