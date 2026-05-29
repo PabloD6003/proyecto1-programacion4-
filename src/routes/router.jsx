@@ -6,6 +6,7 @@ import BeneficiariosLayout from '../features/beneficiarios/BeneficiariosLayout'
 import BeneficiariosPage from '../features/beneficiarios/pages/BeneficiariosPage'
 import AsistenciaPage from '../features/beneficiarios/pages/AsistenciaPage'
 import AccesoPage from '../modules/acceso/pages/AccesoPage'
+import RegistroDeGastos from '../components/Registrodegastos'
 
 const rootRoute = createRootRoute({
   component: App,
@@ -34,7 +35,7 @@ const inventarioRoute = createRoute({
 const gastosRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/gastos',
-  component: () => <h2>Registro de Gastos</h2>,
+  component: RegistroDeGastos,
 })
 
 const beneficiariosLayoutRoute = createRoute({
