@@ -1,17 +1,13 @@
-import axios from 'axios'
+import jsonbinClient from './jsonbinClient'
+import { getEnv } from '../utils/env'
 
-const API_URL = `https://api.jsonbin.io/v3/b/${import.meta.env.VITE_JSONBIN_ACCESO_ID}`
-const ACCESS_KEY = import.meta.env.VITE_JSONBIN_API_KEY
-const headers = {
-  'X-Master-Key': ACCESS_KEY,
-  'Content-Type': 'application/json',
-}
+const BIN_ID = getEnv('VITE_JSONBIN_ACCESO_ID')
 
 export const getRoles = async () => {
-  const response = await axios.get(API_URL, { headers })
-  return response.data.record.roles
+  const response = await jsonbinClient.get(`/${BIN_ID}/latest`)
+  return response.data.record?.roles ?? []
 }
 
 export const saveRoles = async (roles) => {
-  await axios.put(API_URL, { roles }, { headers })
+  await jsonbinClient.put(`/${BIN_ID}`, { roles })
 }

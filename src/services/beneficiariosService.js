@@ -1,11 +1,12 @@
 import jsonbinClient from './jsonbinClient'
+import { getEnv } from '../utils/env'
 
-const BIN_ID = import.meta.env.VITE_JSONBIN_BENEFICIARIOS_ID
+const BIN_ID = getEnv('VITE_JSONBIN_BENEFICIARIOS_ID')
 
 const beneficiariosService = {
   getAll: async () => {
     const response = await jsonbinClient.get(`/${BIN_ID}/latest`)
-    return response.data.record.beneficiarios
+    return response.data.record?.beneficiarios ?? []
   },
 
   create: async (nuevoBeneficiario) => {
@@ -14,7 +15,7 @@ const beneficiariosService = {
     const response = await jsonbinClient.put(`/${BIN_ID}`, {
       beneficiarios: actualizados,
     })
-    return response.data.record.beneficiarios
+    return response.data.record?.beneficiarios ?? actualizados
   },
 
   update: async (id, datosActualizados) => {
@@ -25,7 +26,7 @@ const beneficiariosService = {
     const response = await jsonbinClient.put(`/${BIN_ID}`, {
       beneficiarios: actualizados,
     })
-    return response.data.record.beneficiarios
+    return response.data.record?.beneficiarios ?? actualizados
   },
 
   toggleStatus: async (id) => {
@@ -36,7 +37,7 @@ const beneficiariosService = {
     const response = await jsonbinClient.put(`/${BIN_ID}`, {
       beneficiarios: actualizados,
     })
-    return response.data.record.beneficiarios
+    return response.data.record?.beneficiarios ?? actualizados
   },
 }
 
