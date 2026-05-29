@@ -1,9 +1,12 @@
-import { useInventario } from '../hooks/useInventario'
-import NotificacionesPanel from '../components/inventario/NotificacionesPanel'
-import ProductoForm from '../components/inventario/ProductoForm'
-import MovimientoForm from '../components/inventario/MovimientoForm'
-import ProductosTable from '../components/inventario/ProductosTable'
-import MovimientosTable from '../components/inventario/MovimientosTable'
+
+
+import { useInventario } from '../Hooks/useInventario'
+import NotificacionesPanel from '../Components/inventario/NotificacionesPanel'
+import ProductoForm from '../Components/inventario/ProductoForm'
+import MovimientoForm from '../Components/inventario/MovimientoForm'
+import ProductosTable from '../Components/inventario/ProductosTable'
+import MovimientosTable from '../Components/inventario/MovimientosTable'
+
 
 /**
  * Página principal del módulo de Inventario.
