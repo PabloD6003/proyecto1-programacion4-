@@ -2,8 +2,8 @@ import {useState,useEffect, useCallback} from 'react';
 
 
 const BIN_ID = import.meta.env.VITE_JSONBIN_REGISTRO_GASTOS_ID;
-const API_KEY = import.meta.env.VITE_MASTER_KEY;
-const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`
+const API_KEY = import.meta.env.VITE_JSONBIN_API_KEY;
+const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
 const headers = {
     'X-Master-Key': API_KEY,
