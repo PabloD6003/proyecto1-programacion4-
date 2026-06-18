@@ -3,11 +3,8 @@ import { getApiUrl } from '../utils/env'
 
 export const TOKEN_STORAGE_KEY = 'sigac_token'
 
-const apiClient = axios.create({
-  baseURL: getApiUrl(),
-  headers: {
-    'Content-Type': 'application/json',
-  },
+export const apiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5219',
 })
 
 apiClient.interceptors.request.use((config) => {
