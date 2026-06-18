@@ -1,78 +1,69 @@
-import {useState,useEffect, useCallback} from 'react';
+import { useState, useEffect, useCallback } from 'react'
+import { gastosService } from '../services/gastosService'
 
+export default function useGastos() {
+  const [gastos, setGastos] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-const BIN_ID = import.meta.env.VITE_JSONBIN_REGISTRO_GASTOS_ID;
-const API_KEY = import.meta.env.VITE_JSONBIN_API_KEY;
-const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-
-const headers = {
-    'X-Master-Key': API_KEY,
-    'Content-Type': 'application/json'
-}
-
-export default function useGastos(){
-
-    const [gastos, setGastos]= useState([])
-    const [loading,setLoading]= useState(false)
-    const [error,setError] = useState(null)
-    
-    //Get gastos
-    useEffect(() => {
-        const fetchGastos = async () =>{
-        setLoading(true)
-        try{
-           const response = await fetch(BASE_URL + '/latest', {headers: {"X-Master-Key": API_KEY}}) 
-            const data = await response.json()
-            const expenses = data.record.gastos ?? data.record.Gasto ?? []
-            const gastosNormalizados = expenses.map((gasto, index) => ({
-                ...gasto,
-                id: index + 1,
-            }))
-            setGastos(gastosNormalizados)
-        }catch{
-            setError('Error, no se puede cargar el registro de gastos')
-        }finally{
-            setLoading(false)
-        }
+  useEffect(() => {
+    const fetchGastos = async () => {
+      setLoading(true)
+      try {
+        const response = await gastosService.getAll()
+        setGastos(response.data)
+      } catch {
+        setError('Error, no se puede cargar el registro de gastos')
+      } finally {
+        setLoading(false)
+      }
     }
-        fetchGastos()
-    },[])
-    
-    //create - agregar gasto
-    const agregarGasto = useCallback( async ({detalle, monto, descripcion, fecha_gasto}) =>{
-        setLoading(true) // Indicar que se está cargando
-        try{
-            const response = await fetch(BASE_URL + '/latest', {headers: {"X-Master-Key": API_KEY}}) // Obtener los gastos actuales
-            const data = await response.json()
-            const expenseKey = data.record.gastos ? 'gastos' : data.record.Gasto ? 'Gasto' : 'gastos'
-            const gastosActuales = data.record[expenseKey] ?? []
-            const nuevoGasto = {
-                detalle,
-                monto: parseFloat(monto),
-                descripcion,
-                fecha_gasto,
-            }
-            const gastosActualizados = [...gastosActuales, nuevoGasto].map((gasto, index) => ({
-                ...gasto,
-                id: index + 1,
-            }))
-            await fetch(BASE_URL, {
-                method: 'PUT',
-                headers,
-                body: JSON.stringify({
-                  ...data.record,
-                  [expenseKey]: gastosActualizados,
-                }),
-            })
-            setGastos(gastosActualizados)
-        }catch{
-            setError('Error, no es posible agregar el gasto')
-        }finally{
-            setLoading(false) // Indicar que se ha terminado de cargar
-        }
-       
-    },[])
-   
-    return{gastos,loading,error,agregarGasto}
-    
+    fetchGastos()
+  }, [])
+
+  const agregarGasto = useCallback(async ({ detalle, monto, descripcion, fecha_gasto }) => {
+    setLoading(true)
+    try {
+      const response = await gastosService.create({
+        detalle,
+        monto: parseFloat(monto),
+        descripcion,
+        fecha_gasto,
+      })
+      setGastos((prev) => [...prev, response.data])
+    } catch {
+      setError('Error, no es posible agregar el gasto')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  const editarGasto = useCallback(async (id, data) => {
+    setLoading(true)
+    try {
+      const response = await gastosService.update(id, {
+        ...data,
+        monto: parseFloat(data.monto),
+      })
+      setGastos((prev) => prev.map((g) => (g.id === id ? response.data : g)))
+    } catch {
+      setError('Error, no es posible editar el gasto')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  const eliminarGasto = useCallback(async (id) => {
+    setLoading(true)
+    try {
+      await gastosService.remove(id)
+      setGastos((prev) => prev.filter((g) => g.id !== id))
+    } catch {
+      setError('Error, no es posible eliminar el gasto')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  return { gastos, loading, error, agregarGasto, editarGasto, eliminarGasto }
 }
