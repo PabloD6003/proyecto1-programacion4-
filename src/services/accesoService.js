@@ -1,13 +1,35 @@
-import jsonbinClient from './jsonbinClient'
-import { getEnv } from '../utils/env'
-
-const BIN_ID = getEnv('VITE_JSONBIN_ACCESO_ID')
+import apiClient from './apiClient'
 
 export const getRoles = async () => {
-  const response = await jsonbinClient.get(`/${BIN_ID}/latest`)
-  return response.data.record?.roles ?? []
+  const { data } = await apiClient.get('/roles')
+  return data
 }
 
-export const saveRoles = async (roles) => {
-  await jsonbinClient.put(`/${BIN_ID}`, { roles })
+export const crearRol = async ({ nombre, descripcion, permisos }) => {
+  const { data } = await apiClient.post('/roles', { nombre, descripcion, permisos })
+  return data
+}
+
+export const editarRol = async (id, { nombre, descripcion, permisos }) => {
+  const { data } = await apiClient.put(`/roles/${id}`, { nombre, descripcion, permisos })
+  return data
+}
+
+export const eliminarRol = async (id) => {
+  await apiClient.delete(`/roles/${id}`)
+}
+
+export const getPermisos = async () => {
+  const { data } = await apiClient.get('/permisos')
+  return data
+}
+
+export const getUsuarios = async () => {
+  const { data } = await apiClient.get('/usuarios')
+  return data
+}
+
+export const asignarRolUsuario = async (id, rolId) => {
+  const { data } = await apiClient.put(`/usuarios/${id}/rol`, { rolId })
+  return data
 }
