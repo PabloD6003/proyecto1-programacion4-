@@ -1,8 +1,7 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import * as authService from '../services/authService'
 import { TOKEN_STORAGE_KEY } from '../../../services/apiClient'
-
-export const AuthContext = createContext(null)
+import { AuthContext } from './authContextBase'
 
 export default function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_STORAGE_KEY))
