@@ -82,7 +82,11 @@ export default function RegistroPage() {
         <form.Field
           name="password"
           validators={{
-            onChange: ({ value }) => (!value ? 'La contraseña es requerida' : undefined),
+            onChange: ({ value }) => {
+              if (!value) return 'La contraseña es requerida'
+              if (value.length < 8) return 'La contraseña debe tener al menos 8 caracteres'
+              return undefined
+            },
           }}
         >
           {(field) => (

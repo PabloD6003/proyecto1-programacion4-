@@ -4,7 +4,9 @@ import { useForm } from '@tanstack/react-form'
 const getInitialValues = (rolInicial) => ({
   nombre: rolInicial?.nombre ?? '',
   descripcion: rolInicial?.descripcion ?? '',
-  permisos: rolInicial?.permisos ?? [],
+  // El backend devuelve los permisos como objetos {id, clave, descripcion} pero
+  // espera recibir solo los ids al guardar (permisoIds).
+  permisoIds: (rolInicial?.permisos ?? []).map((p) => (typeof p === 'object' ? p.id : p)),
 })
 
 export default function RoleForm({ rolInicial, catalogoPermisos = [], onSubmit, onCancelar }) {
@@ -72,27 +74,27 @@ export default function RoleForm({ rolInicial, catalogoPermisos = [], onSubmit, 
         )}
       </form.Field>
 
-      <form.Field name="permisos">
+      <form.Field name="permisoIds">
         {(field) => (
           <div>
             <label>Permisos</label>
             <div className="acc-permisos-grid">
               {catalogoPermisos.map((permiso) => {
-                const checked = field.state.value.includes(permiso)
+                const checked = field.state.value.includes(permiso.id)
                 return (
-                  <label key={permiso} className="acc-permiso-item">
+                  <label key={permiso.id} className="acc-permiso-item" title={permiso.descripcion}>
                     <input
                       type="checkbox"
                       checked={checked}
                       onChange={(event) => {
                         const seleccionado = event.target.checked
                         const siguiente = seleccionado
-                          ? [...field.state.value, permiso]
-                          : field.state.value.filter((p) => p !== permiso)
+                          ? [...field.state.value, permiso.id]
+                          : field.state.value.filter((id) => id !== permiso.id)
                         field.handleChange(siguiente)
                       }}
                     />
-                    {permiso}
+                    {permiso.clave}
                   </label>
                 )
               })}

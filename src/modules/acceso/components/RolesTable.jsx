@@ -17,7 +17,10 @@ export default function RolesTable({ roles, onEditar, onEliminar }) {
       }),
       columnHelper.accessor('permisos', {
         header: 'Permisos',
-        cell: ({ getValue }) => (getValue() ?? []).join(', '),
+        cell: ({ getValue }) =>
+          (getValue() ?? [])
+            .map((permiso) => (typeof permiso === 'object' ? permiso.clave : permiso))
+            .join(', '),
       }),
       columnHelper.display({
         id: 'acciones',
