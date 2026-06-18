@@ -21,14 +21,14 @@ export default function useGastos() {
     fetchGastos()
   }, [])
 
-  const agregarGasto = useCallback(async ({ detalle, monto, descripcion, fecha_gasto }) => {
+  const agregarGasto = useCallback(async ({ detalle, monto, descripcion, fechaGasto }) => {
     setLoading(true)
     try {
       const response = await gastosService.create({
         detalle,
         monto: parseFloat(monto),
         descripcion,
-        fecha_gasto,
+        fechaGasto,
       })
       setGastos((prev) => [...prev, response.data])
     } catch {
