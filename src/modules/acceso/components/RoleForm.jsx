@@ -4,9 +4,10 @@ import { useForm } from '@tanstack/react-form'
 const getInitialValues = (rolInicial) => ({
   nombre: rolInicial?.nombre ?? '',
   descripcion: rolInicial?.descripcion ?? '',
+  permisos: rolInicial?.permisos ?? [],
 })
 
-export default function RoleForm({ rolInicial, onSubmit, onCancelar }) {
+export default function RoleForm({ rolInicial, catalogoPermisos = [], onSubmit, onCancelar }) {
   const isEditando = Boolean(rolInicial?.id || rolInicial?.nombre)
 
   const form = useForm({
@@ -67,6 +68,35 @@ export default function RoleForm({ rolInicial, onSubmit, onCancelar }) {
               onChange={(event) => field.handleChange(event.target.value)}
             />
             {field.state.meta.errors.length > 0 ? <small>{field.state.meta.errors[0]}</small> : null}
+          </div>
+        )}
+      </form.Field>
+
+      <form.Field name="permisos">
+        {(field) => (
+          <div>
+            <label>Permisos</label>
+            <div className="acc-permisos-grid">
+              {catalogoPermisos.map((permiso) => {
+                const checked = field.state.value.includes(permiso)
+                return (
+                  <label key={permiso} className="acc-permiso-item">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={(event) => {
+                        const seleccionado = event.target.checked
+                        const siguiente = seleccionado
+                          ? [...field.state.value, permiso]
+                          : field.state.value.filter((p) => p !== permiso)
+                        field.handleChange(siguiente)
+                      }}
+                    />
+                    {permiso}
+                  </label>
+                )
+              })}
+            </div>
           </div>
         )}
       </form.Field>
