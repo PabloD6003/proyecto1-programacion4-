@@ -1,5 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
-import { getUsuarios, asignarRolUsuario } from '../../../services/accesoService'
+import {
+  getUsuarios,
+  asignarRolUsuario,
+  cambiarEstadoUsuario,
+} from '../../../services/accesoService'
 
 export default function useUsuarios(enabled = true) {
   const [usuarios, setUsuarios] = useState([])
@@ -24,10 +28,17 @@ export default function useUsuarios(enabled = true) {
     cargarUsuarios()
   }, [enabled, cargarUsuarios])
 
+  // El backend responde { mensaje }, no el usuario actualizado: recargamos la lista
+  // para reflejar el nuevo rol/estado.
   const asignarRol = async (id, rolId) => {
-    const usuarioActualizado = await asignarRolUsuario(id, rolId)
-    setUsuarios((prev) => prev.map((u) => (u.id === id ? usuarioActualizado : u)))
+    await asignarRolUsuario(id, rolId)
+    await cargarUsuarios()
   }
 
-  return { usuarios, loading, error, asignarRol }
+  const cambiarEstado = async (id, activo) => {
+    await cambiarEstadoUsuario(id, activo)
+    await cargarUsuarios()
+  }
+
+  return { usuarios, loading, error, asignarRol, cambiarEstado }
 }

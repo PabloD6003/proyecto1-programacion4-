@@ -28,13 +28,13 @@ export default function useRoles() {
     cargarRoles()
   }, [cargarRoles])
 
-  const crearRol = async ({ nombre, descripcion, permisos }) => {
-    const nuevoRol = await crearRolApi({ nombre, descripcion, permisos })
+  const crearRol = async ({ nombre, descripcion, permisoIds }) => {
+    const nuevoRol = await crearRolApi({ nombre, descripcion, permisoIds })
     setRoles((prev) => [...prev, nuevoRol])
   }
 
-  const editarRol = async (id, { nombre, descripcion, permisos }) => {
-    const rolActualizado = await editarRolApi(id, { nombre, descripcion, permisos })
+  const editarRol = async (id, { nombre, descripcion, permisoIds }) => {
+    const rolActualizado = await editarRolApi(id, { nombre, descripcion, permisoIds })
     setRoles((prev) => prev.map((r) => (r.id === id ? rolActualizado : r)))
   }
 

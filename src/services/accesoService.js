@@ -5,13 +5,13 @@ export const getRoles = async () => {
   return data
 }
 
-export const crearRol = async ({ nombre, descripcion, permisos }) => {
-  const { data } = await apiClient.post('/roles', { nombre, descripcion, permisos })
+export const crearRol = async ({ nombre, descripcion, permisoIds }) => {
+  const { data } = await apiClient.post('/roles', { nombre, descripcion, permisoIds })
   return data
 }
 
-export const editarRol = async (id, { nombre, descripcion, permisos }) => {
-  const { data } = await apiClient.put(`/roles/${id}`, { nombre, descripcion, permisos })
+export const editarRol = async (id, { nombre, descripcion, permisoIds }) => {
+  const { data } = await apiClient.put(`/roles/${id}`, { nombre, descripcion, permisoIds })
   return data
 }
 
@@ -30,6 +30,11 @@ export const getUsuarios = async () => {
 }
 
 export const asignarRolUsuario = async (id, rolId) => {
-  const { data } = await apiClient.put(`/usuarios/${id}/rol`, { rolId })
+  const { data } = await apiClient.put(`/usuarios/${id}/rol`, { rolId: Number(rolId) })
+  return data
+}
+
+export const cambiarEstadoUsuario = async (id, activo) => {
+  const { data } = await apiClient.patch(`/usuarios/${id}/estado`, { activo })
   return data
 }
