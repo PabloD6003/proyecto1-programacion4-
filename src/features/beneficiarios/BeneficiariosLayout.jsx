@@ -1,7 +1,19 @@
 import { Link, Outlet } from '@tanstack/react-router'
+import useAuth from '../../modules/auth/hooks/useAuth'
+import SinPermisoPage from '../../modules/acceso/pages/SinPermisoPage'
 import './beneficiarios.css'
 
 function BeneficiariosLayout() {
+  const { usuario } = useAuth()
+  const rol = usuario?.rol
+
+  const puedeVerBeneficiarios = rol === 'superusuario'
+  const puedeVerAsistencia = rol === 'superusuario' || rol === 'administrador'
+
+  if (!puedeVerAsistencia) {
+    return <SinPermisoPage />
+  }
+
   return (
     <div className="beneficiarios-module">
       <div className="module-header">
@@ -11,15 +23,17 @@ function BeneficiariosLayout() {
         </h1>
 
         <nav className="module-tabs">
-          <Link
-            to="/beneficiarios"
-            className="tab-link"
-            activeProps={{ className: 'tab-link tab-link--active' }}
-            activeOptions={{ exact: true }}
-          >
-            <i className="fas fa-list" />
-            Beneficiarios
-          </Link>
+          {puedeVerBeneficiarios && (
+            <Link
+              to="/beneficiarios"
+              className="tab-link"
+              activeProps={{ className: 'tab-link tab-link--active' }}
+              activeOptions={{ exact: true }}
+            >
+              <i className="fas fa-list" />
+              Beneficiarios
+            </Link>
+          )}
           <Link
             to="/beneficiarios/asistencia"
             className="tab-link"
