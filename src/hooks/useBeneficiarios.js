@@ -23,26 +23,11 @@ const useBeneficiarios = () => {
     fetchBeneficiarios()
   }, [fetchBeneficiarios])
 
-  const generarId = (lista) => {
-    if (lista.length === 0) return 'b001'
-    const numeros = lista
-      .map((b) => parseInt(b.id.replace('b', ''), 10))
-      .filter((n) => !isNaN(n))
-    const siguiente = Math.max(...numeros) + 1
-    return `b${String(siguiente).padStart(3, '0')}`
-  }
-
   const crearBeneficiario = async (datos) => {
     try {
       setError(null)
-      const nuevo = {
-        ...datos,
-        id: generarId(beneficiarios),
-        fechaRegistro: new Date().toISOString().split('T')[0],
-        activo: true,
-      }
-      const actualizados = await beneficiariosService.create(nuevo)
-      setBeneficiarios(actualizados)
+      const nuevo = await beneficiariosService.create(datos)
+      setBeneficiarios((prev) => [...prev, nuevo])
     } catch (err) {
       setError(err.message || 'Error al crear el beneficiario')
       throw err
@@ -52,8 +37,8 @@ const useBeneficiarios = () => {
   const actualizarBeneficiario = async (id, datos) => {
     try {
       setError(null)
-      const actualizados = await beneficiariosService.update(id, datos)
-      setBeneficiarios(actualizados)
+      const actualizado = await beneficiariosService.update(id, datos)
+      setBeneficiarios((prev) => prev.map((b) => b.id === actualizado.id ? actualizado : b))
     } catch (err) {
       setError(err.message || 'Error al actualizar el beneficiario')
       throw err
@@ -63,8 +48,8 @@ const useBeneficiarios = () => {
   const toggleStatus = async (id) => {
     try {
       setError(null)
-      const actualizados = await beneficiariosService.toggleStatus(id)
-      setBeneficiarios(actualizados)
+      const actualizado = await beneficiariosService.toggleStatus(id)
+      setBeneficiarios((prev) => prev.map((b) => b.id === actualizado.id ? actualizado : b))
     } catch (err) {
       setError(err.message || 'Error al cambiar el estado')
       throw err
