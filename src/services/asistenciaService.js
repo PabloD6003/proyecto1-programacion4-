@@ -1,11 +1,12 @@
 import jsonbinClient from './jsonbinClient'
+import { getEnv } from '../utils/env'
 
-const BIN_ID = import.meta.env.VITE_JSONBIN_ASISTENCIA_ID
+const BIN_ID = getEnv('VITE_JSONBIN_ASISTENCIA_ID')
 
 const asistenciaService = {
   getAll: async () => {
     const response = await jsonbinClient.get(`/${BIN_ID}/latest`)
-    return response.data.record.asistencia
+    return response.data.record?.asistencia ?? {}
   },
 
   getByFecha: async (fecha) => {
@@ -31,7 +32,7 @@ const asistenciaService = {
       asistencia: asistenciaActualizada,
     })
 
-    return response.data.record.asistencia[fecha] || []
+    return response.data.record?.asistencia?.[fecha] || presentesActualizados
   },
 }
 

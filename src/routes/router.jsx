@@ -1,41 +1,68 @@
-import { createRouter, createRoute, createRootRoute } from '@tanstack/react-router'
-import RegistroDeGastos from '../components/RegistroDeGastos'
+import { createRouter, createRoute, createRootRoute, redirect, Outlet } from '@tanstack/react-router'
+import RegistroDeGastos from '../components/Registro de gastos'
 import App from '../App'
+import InventarioPage from '../pages/InventarioPage'
+import DonacionesPage from '../pages/Donaciones/DonacionesPage'
 import BeneficiariosLayout from '../features/beneficiarios/BeneficiariosLayout'
 import BeneficiariosPage from '../features/beneficiarios/pages/BeneficiariosPage'
 import AsistenciaPage from '../features/beneficiarios/pages/AsistenciaPage'
-import DonacionesPage from '../pages/Donaciones/DonacionesPage'
+import AccesoGuard from '../modules/acceso/pages/AccesoGuard'
+import LoginPage from '../modules/auth/pages/LoginPage'
+import RegistroPage from '../modules/auth/pages/RegistroPage'
 
 const rootRoute = createRootRoute({
+  component: () => <Outlet />,
+})
+
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/login',
+  component: LoginPage,
+})
+
+const registroRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/registro',
+  component: RegistroPage,
+})
+
+const appLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: 'app-layout',
   component: App,
+  beforeLoad: ({ context }) => {
+    if (!context.auth?.sesionIniciada) {
+      throw redirect({ to: '/login' })
+    }
+  },
 })
 
 const indexRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appLayoutRoute,
   path: '/',
   component: () => <h1>Bienvenido al Sistema SIGAC</h1>,
 })
 
 const donacionesRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appLayoutRoute,
   path: '/donaciones',
   component: DonacionesPage,
 })
 
 const inventarioRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appLayoutRoute,
   path: '/inventario',
-  component: () => <h2>Inventario</h2>,
+  component: InventarioPage,
 })
 
 const gastosRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appLayoutRoute,
   path: '/gastos',
   component: () => <RegistroDeGastos/>,
 })
 
 const beneficiariosLayoutRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appLayoutRoute,
   path: '/beneficiarios',
   component: BeneficiariosLayout,
 })
@@ -53,18 +80,25 @@ const asistenciaRoute = createRoute({
 })
 
 const accesoRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appLayoutRoute,
   path: '/acceso',
-  component: () => <h2>Gestión de Acceso</h2>,
+  component: AccesoGuard,
 })
 
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
-    indexRoute,
-    donacionesRoute,
-    inventarioRoute,
-    gastosRoute,
-    beneficiariosLayoutRoute.addChildren([beneficiariosIndexRoute, asistenciaRoute]),
-    accesoRoute,
+    loginRoute,
+    registroRoute,
+    appLayoutRoute.addChildren([
+      indexRoute,
+      donacionesRoute,
+      inventarioRoute,
+      gastosRoute,
+      beneficiariosLayoutRoute.addChildren([beneficiariosIndexRoute, asistenciaRoute]),
+      accesoRoute,
+    ]),
   ]),
+  context: {
+    auth: undefined,
+  },
 })

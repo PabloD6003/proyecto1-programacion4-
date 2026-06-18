@@ -1,11 +1,19 @@
 import axios from 'axios'
+import { getJsonBinApiKey, getJsonBinBaseUrl } from '../utils/env'
 
 const jsonbinClient = axios.create({
-  baseURL: 'https://api.jsonbin.io/v3/b',
+  baseURL: `${getJsonBinBaseUrl()}/b`,
   headers: {
-    'X-Master-Key': import.meta.env.VITE_JSONBIN_API_KEY,
     'Content-Type': 'application/json',
   },
+})
+
+jsonbinClient.interceptors.request.use((config) => {
+  const apiKey = getJsonBinApiKey()
+  if (apiKey) {
+    config.headers['X-Master-Key'] = apiKey
+  }
+  return config
 })
 
 export default jsonbinClient

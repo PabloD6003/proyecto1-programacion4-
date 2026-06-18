@@ -1,7 +1,12 @@
 import './App.css'
 import { Link, Outlet } from '@tanstack/react-router'
+import useAuth from './modules/auth/hooks/useAuth'
 
 function App() {
+  const { usuario, logout, tienePermiso } = useAuth()
+  const puedeGestionarAcceso = tienePermiso('roles.gestionar') || tienePermiso('roles.asignar')
+  const puedeDonar = tienePermiso('donaciones.crear')
+
   return (
     <>
       <aside className="sidebar" id="sidebar">
@@ -37,35 +42,41 @@ function App() {
             <i className="fas fa-people-group" />
             <span>Gestión de Beneficiarios</span>
           </Link>
-          <Link to="/donaciones" className="nav-item">
-            <i className="fas fa-hand-holding-heart" />
-            <span>Donaciones</span>
-          </Link>
-          <Link to="/acceso" className="nav-item">
-            <i className="fas fa-chart-bar" />
-            <span>Gestión de Acceso</span>
-          </Link>
+          {puedeDonar && (
+            <Link to="/donaciones" className="nav-item">
+              <i className="fas fa-hand-holding-heart" />
+              <span>Donaciones</span>
+            </Link>
+          )}
+          {puedeGestionarAcceso && (
+            <Link to="/acceso" className="nav-item">
+              <i className="fas fa-chart-bar" />
+              <span>Gestión de Acceso</span>
+            </Link>
+          )}
         </nav>
       </aside>
+
       <div className="overlay" id="overlay" />
+
       <div className="main-wrapper">
         <header className="topbar">
           <button className="hamburger" id="hamburgerBtn">
             <i className="fas fa-bars" />
           </button>
           <div className="topbar-right">
-            <div className="avatar">
-              <img
-                src="https://i.pinimg.com/236x/00/2e/94/002e94da353f89fc849a7f6112c5b066.jpg"
-                alt="user"
-              />
-              <i className="fas fa-chevron-down" />
-            </div>
+            <span className="usuario-nombre">{usuario?.nombre}</span>
+            <button type="button" className="btn-cerrar-sesion" onClick={logout}>
+              <i className="fas fa-right-from-bracket" />
+              Cerrar sesión
+            </button>
           </div>
         </header>
+
         <main className="content">
           <Outlet />
         </main>
+
         <footer style={{
           textAlign: 'center',
           padding: '16px',
@@ -79,4 +90,5 @@ function App() {
     </>
   )
 }
+
 export default App
