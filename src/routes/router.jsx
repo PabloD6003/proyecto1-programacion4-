@@ -9,9 +9,16 @@ import AsistenciaPage from '../features/beneficiarios/pages/AsistenciaPage'
 import AccesoGuard from '../modules/acceso/pages/AccesoGuard'
 import LoginPage from '../modules/auth/pages/LoginPage'
 import RegistroPage from '../modules/auth/pages/RegistroPage'
+import LandingPage from '../pages/Landing/LandingPage'
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />,
+})
+
+const landingRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/',
+  component: LandingPage,
 })
 
 const loginRoute = createRoute({
@@ -35,12 +42,6 @@ const appLayoutRoute = createRoute({
       throw redirect({ to: '/login' })
     }
   },
-})
-
-const indexRoute = createRoute({
-  getParentRoute: () => appLayoutRoute,
-  path: '/',
-  component: () => <h1>Bienvenido al Sistema SIGAC</h1>,
 })
 
 const donacionesRoute = createRoute({
@@ -87,10 +88,10 @@ const accesoRoute = createRoute({
 
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
+    landingRoute,
     loginRoute,
     registroRoute,
     appLayoutRoute.addChildren([
-      indexRoute,
       donacionesRoute,
       inventarioRoute,
       gastosRoute,
