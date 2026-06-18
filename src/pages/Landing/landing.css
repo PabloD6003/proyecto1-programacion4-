@@ -73,8 +73,13 @@
 .ac-btn--primary:hover { background: var(--ac-orange-dark); transform: translateY(-2px); }
 .ac-btn--ghost { background: transparent; color: var(--ac-ink); border-color: var(--ac-border); }
 .ac-btn--ghost:hover { background: rgba(24, 160, 168, 0.1); border-color: var(--ac-teal); color: var(--ac-teal-dark); }
-.ac-btn--light { background: rgba(255, 255, 255, 0.95); color: var(--ac-teal-dark); }
-.ac-btn--light:hover { background: #fff; transform: translateY(-2px); }
+.ac-btn--light {
+  background: rgba(31, 42, 55, 0.35);
+  color: #fff;
+  border-color: #fff;
+  backdrop-filter: blur(4px);
+}
+.ac-btn--light:hover { background: #fff; color: var(--ac-teal-dark); transform: translateY(-2px); }
 
 @media (prefers-reduced-motion: reduce) {
   .ac-btn:hover { transform: none; }
