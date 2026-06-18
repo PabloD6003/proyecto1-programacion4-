@@ -250,6 +250,28 @@ body {
 }
 .avatar i { font-size: 11px; color: var(--text-muted); }
 
+.usuario-nombre {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.btn-cerrar-sesion {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-cerrar-sesion:hover { background: var(--bg); }
+
 /* =====================
    CONTENT
    ===================== */
