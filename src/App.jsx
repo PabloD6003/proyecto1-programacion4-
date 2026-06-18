@@ -6,6 +6,7 @@ function App() {
   const { usuario, logout, tienePermiso } = useAuth()
   const puedeGestionarAcceso = tienePermiso('roles.gestionar') || tienePermiso('roles.asignar')
   const puedeDonar = tienePermiso('donaciones.crear')
+  const puedeVerBeneficiarios = usuario?.rol === 'superusuario' || usuario?.rol === 'administrador'
 
   return (
     <>
@@ -38,10 +39,12 @@ function App() {
             <i className="fas fa-cart-shopping" />
             <span>Registro de Gastos</span>
           </Link>
-          <Link to="/beneficiarios" className="nav-item">
-            <i className="fas fa-people-group" />
-            <span>Gestión de Beneficiarios</span>
-          </Link>
+          {puedeVerBeneficiarios && (
+            <Link to="/beneficiarios" className="nav-item">
+              <i className="fas fa-people-group" />
+              <span>Gestión de Beneficiarios</span>
+            </Link>
+          )}
           {puedeDonar && (
             <Link to="/donaciones" className="nav-item">
               <i className="fas fa-hand-holding-heart" />

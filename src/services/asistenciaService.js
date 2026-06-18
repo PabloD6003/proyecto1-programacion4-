@@ -1,38 +1,14 @@
-import jsonbinClient from './jsonbinClient'
-import { getEnv } from '../utils/env'
-
-const BIN_ID = getEnv('VITE_JSONBIN_ASISTENCIA_ID')
+import apiClient from './apiClient'
 
 const asistenciaService = {
-  getAll: async () => {
-    const response = await jsonbinClient.get(`/${BIN_ID}/latest`)
-    return response.data.record?.asistencia ?? {}
-  },
-
   getByFecha: async (fecha) => {
-    const asistencia = await asistenciaService.getAll()
-    return asistencia[fecha] || []
+    const { data } = await apiClient.get(`/asistencia/${fecha}`)
+    return data
   },
 
   toggleAsistencia: async (fecha, beneficiarioId) => {
-    const asistencia = await asistenciaService.getAll()
-    const presentesHoy = asistencia[fecha] || []
-
-    const yaPresente = presentesHoy.includes(beneficiarioId)
-    const presentesActualizados = yaPresente
-      ? presentesHoy.filter((id) => id !== beneficiarioId)
-      : [...presentesHoy, beneficiarioId]
-
-    const asistenciaActualizada = {
-      ...asistencia,
-      [fecha]: presentesActualizados,
-    }
-
-    const response = await jsonbinClient.put(`/${BIN_ID}`, {
-      asistencia: asistenciaActualizada,
-    })
-
-    return response.data.record?.asistencia?.[fecha] || presentesActualizados
+    const { data } = await apiClient.put(`/asistencia/${fecha}/${beneficiarioId}/toggle`)
+    return data
   },
 }
 
