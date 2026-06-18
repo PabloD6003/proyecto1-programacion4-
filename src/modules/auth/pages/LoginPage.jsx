@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useForm } from '@tanstack/react-form'
 import { Link, useNavigate } from '@tanstack/react-router'
 import useAuth from '../hooks/useAuth'
+import './auth.css'
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -18,7 +19,21 @@ export default function LoginPage() {
         await login(value)
         navigate({ to: '/' })
       } catch (err) {
-        setErrorBackend(err?.response?.data?.mensaje ?? 'Credenciales inválidas')
+        if (err?.response) {
+          // El backend respondió con un error (401, 400, etc.)
+          const msg =
+            err.response.data?.mensaje ??
+            err.response.data?.message ??
+            (err.response.status === 401 ? 'Credenciales inválidas' : `Error ${err.response.status}`)
+          setErrorBackend(msg)
+        } else if (err?.request) {
+          // La petición salió pero no hubo respuesta (servidor caído, CORS, certificado HTTPS)
+          setErrorBackend(
+            'No se pudo conectar con el servidor. Verifica que el backend esté corriendo y que aceptaste el certificado HTTPS.',
+          )
+        } else {
+          setErrorBackend(err?.message ?? 'Ocurrió un error inesperado')
+        }
       } finally {
         setEnviando(false)
       }
