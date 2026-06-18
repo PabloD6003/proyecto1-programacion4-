@@ -23,23 +23,31 @@ export default function AccesoPage() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
   const [rolEditando, setRolEditando] = useState(null)
   const [idAEliminar, setIdAEliminar] = useState(null)
+  const [errorAccion, setErrorAccion] = useState(null)
 
   const abrirFormularioCreacion = () => {
+    setErrorAccion(null)
     setRolEditando(null)
     setMostrarFormulario(true)
   }
 
-  const manejarSubmit = (data) => {
-    if (rolEditando?.id) {
-      editarRol(rolEditando.id, data)
-    } else {
-      crearRol(data)
+  const manejarSubmit = async (data) => {
+    setErrorAccion(null)
+    try {
+      if (rolEditando?.id) {
+        await editarRol(rolEditando.id, data)
+      } else {
+        await crearRol(data)
+      }
+      setMostrarFormulario(false)
+      setRolEditando(null)
+    } catch (err) {
+      setErrorAccion(err?.response?.data?.mensaje ?? 'No se pudo guardar el rol')
     }
-    setMostrarFormulario(false)
-    setRolEditando(null)
   }
 
   const manejarCancelar = () => {
+    setErrorAccion(null)
     setMostrarFormulario(false)
     setRolEditando(null)
   }
@@ -54,8 +62,14 @@ export default function AccesoPage() {
   }
 
   const confirmarEliminar = async () => {
-    await eliminarRol(idAEliminar)
-    setIdAEliminar(null)
+    setErrorAccion(null)
+    try {
+      await eliminarRol(idAEliminar)
+    } catch (err) {
+      setErrorAccion(err?.response?.data?.mensaje ?? 'No se pudo eliminar el rol')
+    } finally {
+      setIdAEliminar(null)
+    }
   }
 
   return (
@@ -73,6 +87,8 @@ export default function AccesoPage() {
       </div>
 
       <div className="acc-content">
+        {errorAccion && <div className="acc-alert acc-alert--error">{errorAccion}</div>}
+
         {puedeGestionarRoles && (
           <>
             {mostrarFormulario && (
