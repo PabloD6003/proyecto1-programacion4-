@@ -26,3 +26,7 @@ export function getJsonBinBaseUrl() {
 export function hasJsonBinCredentials() {
   return Boolean(getJsonBinApiKey())
 }
+
+export function getApiUrl() {
+  return getEnv('VITE_API_URL', 'http://localhost:5000/api')
+}

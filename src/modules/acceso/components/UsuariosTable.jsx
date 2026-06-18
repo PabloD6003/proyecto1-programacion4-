@@ -3,37 +3,41 @@ import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '
 
 const columnHelper = createColumnHelper()
 
-export default function RolesTable({ roles, onEditar, onEliminar }) {
+const nombreRol = (rol) => (typeof rol === 'object' ? rol?.nombre : rol) ?? '-'
+
+export default function UsuariosTable({ usuarios, roles, onAsignarRol }) {
   const columns = useMemo(
     () => [
-      columnHelper.accessor('id', {
-        header: 'ID',
-      }),
       columnHelper.accessor('nombre', {
         header: 'Nombre',
       }),
-      columnHelper.accessor('descripcion', {
-        header: 'Descripción',
+      columnHelper.accessor('email', {
+        header: 'Email',
       }),
-      columnHelper.accessor('permisos', {
-        header: 'Permisos',
-        cell: ({ getValue }) =>
-          (getValue() ?? [])
-            .map((permiso) => (typeof permiso === 'object' ? permiso.clave : permiso))
-            .join(', '),
+      columnHelper.accessor('rol', {
+        header: 'Rol actual',
+        cell: ({ getValue }) => nombreRol(getValue()),
       }),
       columnHelper.display({
-        id: 'acciones',
-        header: 'Acciones',
+        id: 'asignar',
+        header: 'Asignar rol',
         cell: ({ row, table }) => (
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button type="button" onClick={() => table.options.meta.onEditar(row.original)}>
-              Editar
-            </button>
-            <button type="button" onClick={() => table.options.meta.onEliminar(row.original.id)}>
-              Eliminar
-            </button>
-          </div>
+          <select
+            defaultValue=""
+            onChange={(event) => {
+              const rolId = event.target.value
+              if (rolId) table.options.meta.onAsignarRol(row.original.id, rolId)
+            }}
+          >
+            <option value="" disabled>
+              Seleccionar rol
+            </option>
+            {table.options.meta.roles.map((rol) => (
+              <option key={rol.id} value={rol.id}>
+                {rol.nombre}
+              </option>
+            ))}
+          </select>
         ),
       }),
     ],
@@ -41,12 +45,12 @@ export default function RolesTable({ roles, onEditar, onEliminar }) {
   )
 
   const table = useReactTable({
-    data: roles,
+    data: usuarios,
     columns,
     getCoreRowModel: getCoreRowModel(),
     meta: {
-      onEditar,
-      onEliminar,
+      onAsignarRol,
+      roles,
     },
   })
 

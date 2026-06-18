@@ -4,9 +4,12 @@ import { useForm } from '@tanstack/react-form'
 const getInitialValues = (rolInicial) => ({
   nombre: rolInicial?.nombre ?? '',
   descripcion: rolInicial?.descripcion ?? '',
+  // El backend devuelve los permisos como objetos {id, clave, descripcion} pero
+  // espera recibir solo los ids al guardar (permisoIds).
+  permisoIds: (rolInicial?.permisos ?? []).map((p) => (typeof p === 'object' ? p.id : p)),
 })
 
-export default function RoleForm({ rolInicial, onSubmit, onCancelar }) {
+export default function RoleForm({ rolInicial, catalogoPermisos = [], onSubmit, onCancelar }) {
   const isEditando = Boolean(rolInicial?.id || rolInicial?.nombre)
 
   const form = useForm({
@@ -67,6 +70,35 @@ export default function RoleForm({ rolInicial, onSubmit, onCancelar }) {
               onChange={(event) => field.handleChange(event.target.value)}
             />
             {field.state.meta.errors.length > 0 ? <small>{field.state.meta.errors[0]}</small> : null}
+          </div>
+        )}
+      </form.Field>
+
+      <form.Field name="permisoIds">
+        {(field) => (
+          <div>
+            <label>Permisos</label>
+            <div className="acc-permisos-grid">
+              {catalogoPermisos.map((permiso) => {
+                const checked = field.state.value.includes(permiso.id)
+                return (
+                  <label key={permiso.id} className="acc-permiso-item" title={permiso.descripcion}>
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={(event) => {
+                        const seleccionado = event.target.checked
+                        const siguiente = seleccionado
+                          ? [...field.state.value, permiso.id]
+                          : field.state.value.filter((id) => id !== permiso.id)
+                        field.handleChange(siguiente)
+                      }}
+                    />
+                    {permiso.clave}
+                  </label>
+                )
+              })}
+            </div>
           </div>
         )}
       </form.Field>

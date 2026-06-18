@@ -69,7 +69,7 @@ export default function FormularioGasto({ onAgregar, loading }) {
                 </div>
             )}
             </form.Field>
-            <form.Field name = "fecha_gasto"
+            <form.Field name = "fechaGasto"
             validators={{
                 onChange: ({value}) =>
                     !value ? 'La fecha es requerida' : undefined,

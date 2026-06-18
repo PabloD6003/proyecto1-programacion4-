@@ -26,7 +26,7 @@ const columns = [
       }).format(info.getValue()),
   },
   {
-    accessorKey: 'fecha_gasto',
+    accessorKey: 'fechaGasto',
     header: 'Fecha',
     cell: (info) => {
       const value = info.getValue()
