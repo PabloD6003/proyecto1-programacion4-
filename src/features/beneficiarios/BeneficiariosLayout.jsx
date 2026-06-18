@@ -1,4 +1,5 @@
-import { Link, Outlet } from '@tanstack/react-router'
+import { Link, Outlet, useNavigate, useRouterState } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import useAuth from '../../modules/auth/hooks/useAuth'
 import SinPermisoPage from '../../modules/acceso/pages/SinPermisoPage'
 import './beneficiarios.css'
@@ -6,9 +7,17 @@ import './beneficiarios.css'
 function BeneficiariosLayout() {
   const { usuario } = useAuth()
   const rol = usuario?.rol
+  const navigate = useNavigate()
+  const location = useRouterState({ select: (s) => s.location })
 
   const puedeVerBeneficiarios = rol === 'superusuario'
   const puedeVerAsistencia = rol === 'superusuario' || rol === 'administrador'
+
+  useEffect(() => {
+    if (rol === 'administrador' && location.pathname === '/beneficiarios') {
+      navigate({ to: '/beneficiarios/asistencia', replace: true })
+    }
+  }, [rol, location.pathname, navigate])
 
   if (!puedeVerAsistencia) {
     return <SinPermisoPage />
