@@ -10,15 +10,18 @@ import AccesoGuard from '../modules/acceso/pages/AccesoGuard'
 import AccesoPage from '../modules/acceso/pages/AccesoPage'
 import LoginPage from '../modules/auth/pages/LoginPage'
 import RegistroPage from '../modules/auth/pages/RegistroPage'
-import DonarPage from '../pages/Donaciones/DonarPage'
-import NotFoundPage from '../pages/NotFoundPage'
+import LandingPage from '../pages/Landing/LandingPage'
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />,
   notFoundComponent: NotFoundPage,
 })
 
-/* ========================= PUBLICAS ========================= */
+const landingRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/',
+  component: LandingPage,
+})
 
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -45,15 +48,6 @@ const appLayoutRoute = createRoute({
   },
 })
 
-/* ========================= RUTAS ========================= */
-
-const indexRoute = createRoute({
-  getParentRoute: () => appLayoutRoute,
-  path: '/',
-  component: () => <h1>Bienvenido al Sistema SIGAC</h1>,
-})
-
-/* DONACIONES: USUARIO NORMAL PUEDE ENTRAR */
 const donacionesRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/donaciones',
@@ -128,10 +122,10 @@ const accesoRoute = createRoute({
 
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
+    landingRoute,
     loginRoute,
     registroRoute,
     appLayoutRoute.addChildren([
-      indexRoute,
       donacionesRoute,
        donarRoute,
       inventarioRoute,
