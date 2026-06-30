@@ -24,11 +24,11 @@ export default function LandingPage() {
   const puedeGestionarAcceso = tienePermiso('roles.gestionar') || tienePermiso('roles.asignar')
   const puedeDonar = tienePermiso('donaciones.crear')
   const puedeVerBeneficiarios = usuario?.rol === 'superusuario' || usuario?.rol === 'administrador'
-
+  const visualizarGastos = usuario?.rol === 'superusuario' || usuario?.rol === 'administrador'
   const modulos = [
     { to: '/donaciones', icon: 'fa-hand-holding-heart', titulo: 'Donaciones', texto: 'Registrar y gestionar donaciones', show: puedeDonar },
     { to: '/inventario', icon: 'fa-box-archive', titulo: 'Inventario', texto: 'Control de productos y existencias', show: sesionIniciada },
-    { to: '/gastos', icon: 'fa-cart-shopping', titulo: 'Registro de Gastos', texto: 'Seguimiento de gastos de la asociación', show: sesionIniciada },
+    { to: '/gastos', icon: 'fa-cart-shopping', titulo: 'Registro de Gastos', texto: 'Seguimiento de gastos de la asociación', show: visualizarGastos },
     { to: '/beneficiarios', icon: 'fa-people-group', titulo: 'Beneficiarios', texto: 'Gestión de beneficiarios y asistencia', show: puedeVerBeneficiarios },
     { to: '/acceso', icon: 'fa-user-shield', titulo: 'Gestión de Acceso', texto: 'Roles, permisos y usuarios', show: puedeGestionarAcceso },
   ].filter((m) => m.show)

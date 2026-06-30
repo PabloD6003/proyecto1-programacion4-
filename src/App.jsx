@@ -7,7 +7,7 @@ function App() {
   const puedeGestionarAcceso = tienePermiso('roles.gestionar') || tienePermiso('roles.asignar')
   const puedeDonar = tienePermiso('donaciones.crear')
   const puedeVerBeneficiarios = usuario?.rol === 'superusuario' || usuario?.rol === 'administrador'
-
+  const visualizarGastos = usuario?.rol === 'superusuario' || usuario?.rol === 'administrador'
   return (
     <>
       <aside className="sidebar" id="sidebar">
@@ -34,11 +34,13 @@ function App() {
           <Link to="/inventario" className="nav-item">
             <i className="fas fa-box-archive" />
             <span>Inventario</span>
-          </Link>
+           </Link>
+          {visualizarGastos && (
           <Link to="/gastos" className="nav-item">
             <i className="fas fa-cart-shopping" />
             <span>Registro de Gastos</span>
           </Link>
+          )}
           {puedeVerBeneficiarios && (
             <Link to="/beneficiarios" className="nav-item">
               <i className="fas fa-people-group" />
