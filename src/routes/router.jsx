@@ -7,12 +7,14 @@ import BeneficiariosLayout from '../features/beneficiarios/BeneficiariosLayout'
 import BeneficiariosPage from '../features/beneficiarios/pages/BeneficiariosPage'
 import AsistenciaPage from '../features/beneficiarios/pages/AsistenciaPage'
 import AccesoGuard from '../modules/acceso/pages/AccesoGuard'
+import AccesoPage from '../modules/acceso/pages/AccesoPage'
 import LoginPage from '../modules/auth/pages/LoginPage'
 import RegistroPage from '../modules/auth/pages/RegistroPage'
 import LandingPage from '../pages/Landing/LandingPage'
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />,
+  notFoundComponent: NotFoundPage,
 })
 
 const landingRoute = createRoute({
@@ -33,6 +35,8 @@ const registroRoute = createRoute({
   component: RegistroPage,
 })
 
+/* ========================= APP PRIVADA ========================= */
+
 const appLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: 'app-layout',
@@ -50,22 +54,45 @@ const donacionesRoute = createRoute({
   component: DonacionesPage,
 })
 
+
+const donarRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/donar',
+  component: DonarPage,
+})
+
+
+/*  INVENTARIO: SOLO ADMIN/SUPER */
 const inventarioRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/inventario',
-  component: InventarioPage,
+  component: () => (
+    <AccesoGuard permiso="INVENTARIO_VER">
+      <InventarioPage />
+    </AccesoGuard>
+  ),
 })
 
+/*  GASTOS: SOLO ADMIN/SUPER */
 const gastosRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/gastos',
-  component: () => <RegistroDeGastos/>,
+  component: () => (
+    <AccesoGuard permiso="GASTOS_VER">
+      <RegistroDeGastos />
+    </AccesoGuard>
+  ),
 })
 
+/*  BENEFICIARIOS */
 const beneficiariosLayoutRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/beneficiarios',
-  component: BeneficiariosLayout,
+  component: () => (
+    <AccesoGuard permiso="BENEFICIARIOS_VER">
+      <BeneficiariosLayout />
+    </AccesoGuard>
+  ),
 })
 
 const beneficiariosIndexRoute = createRoute({
@@ -80,11 +107,18 @@ const asistenciaRoute = createRoute({
   component: AsistenciaPage,
 })
 
+/*  ACCESO: PROTEGIDO POR PERMISOS */
 const accesoRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/acceso',
-  component: AccesoGuard,
+  component: () => (
+    <AccesoGuard permiso={['roles.gestionar', 'roles.asignar']}>
+      <AccesoPage />
+    </AccesoGuard>
+  ),
 })
+
+/* ========================= ROUTER FINAL ========================= */
 
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
@@ -93,10 +127,11 @@ export const router = createRouter({
     registroRoute,
     appLayoutRoute.addChildren([
       donacionesRoute,
+       donarRoute,
       inventarioRoute,
       gastosRoute,
-      beneficiariosLayoutRoute.addChildren([beneficiariosIndexRoute, asistenciaRoute]),
       accesoRoute,
+      beneficiariosLayoutRoute.addChildren([beneficiariosIndexRoute, asistenciaRoute]),
     ]),
   ]),
   context: {
