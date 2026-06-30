@@ -3,28 +3,12 @@ import { Link, Outlet, useNavigate } from '@tanstack/react-router'
 import useAuth from './modules/auth/hooks/useAuth'
 
 function App() {
-  const { usuario, logout, tienePermiso } = useAuth()
-  const navigate = useNavigate()
-
-  const handleLogout = () => {
-    logout()
-    navigate({ to: '/login' })
-  }
-
-  const esAdminOSuper =
-    usuario?.rol === 'superusuario' || usuario?.rol === 'administrador'
-
-  const puedeGestionarAcceso =
-    tienePermiso('roles.gestionar') || tienePermiso('roles.asignar')
-
-  const puedeDonar = true // todos pueden donar
-
-  const puedeVerInventario = esAdminOSuper || tienePermiso('INVENTARIO_VER')
-  const puedeVerGastos = esAdminOSuper || tienePermiso('GASTOS_VER')
-
-  const puedeVerBeneficiarios =
-    usuario?.rol === 'superusuario' || usuario?.rol === 'administrador'
-
+  const { usuario, logout, tienePermiso, sesionIniciada } = useAuth()
+  const puedeGestionarAcceso = tienePermiso('roles.gestionar') || tienePermiso('roles.asignar')
+  const puedeDonar = tienePermiso('donaciones.crear')
+  const puedeVerBeneficiarios = usuario?.rol === 'superusuario' || usuario?.rol === 'administrador'
+  const puedeVerInventario = sesionIniciada  // cualquier usuario logueado ve inventario
+const puedeVerGastos = usuario?.rol === 'superusuario' || usuario?.rol === 'administrador'
   return (
     <>
       <aside className="sidebar">
